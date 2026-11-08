@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tg_connect">Telegram verbinden</string>
+    <string name="tg_intro">Chatten Sie mit Familie und Freunden über Telegram, direkt bei Ihren Nachrichten.</string>
+    <string name="tg_phone_question">Ist das Ihre Telefonnummer?</string>
+    <string name="tg_phone_hint">Telefonnummer mit Landesvorwahl</string>
+    <string name="tg_send_code">Code senden</string>
+    <string name="tg_waiting_code">Warte auf den Code… Er kommt per SMS und wird automatisch eingetragen.</string>
+    <string name="tg_enter_code">Code eingeben</string>
+    <string name="tg_code_in_app">Der Code wurde an Ihre Telegram-App auf einem anderen Gerät gesendet.</string>
+    <string name="tg_confirm">Bestätigen</string>
+    <string name="tg_password_title">Passwort</string>
+    <string name="tg_password_hint">Ihr Telegram-Passwort (Bestätigung in zwei Schritten). Fragen Sie Ihren Helfer, wenn Sie es nicht kennen.</string>
+    <string name="tg_qr_button">Helfer einen Code scannen lassen</string>
+    <string name="tg_qr_title">Mit Helfer anmelden</string>
+    <string name="tg_qr_hint">Bitten Sie ein Familienmitglied, Telegram auf dem eigenen Telefon zu öffnen: Einstellungen → Geräte → Desktop-Gerät verbinden, und diesen Code zu scannen.</string>
+    <string name="tg_no_account">Diese Nummer hat noch kein Telegram-Konto. Erstellen Sie zuerst eines in der Telegram-App.</string>
+    <string name="tg_not_configured">Telegram ist in dieser Version der App nicht eingerichtet.</string>
+    <string name="tg_logout">Telegram trennen</string>
+    <string name="tg_media">[Foto oder Datei]</string>
+    <string name="tg_connecting">Verbinden…</string>
+    <string name="tg_error">Etwas ist schiefgelaufen: %1$s</string>
+    <string name="tg_open_chat">Telegram öffnen</string>
+    <string name="tg_registration">Diese Nummer ist neu bei Telegram. Erstellen Sie zuerst ein Konto in der Telegram-App.</string>
+</resources>

@@ -13,6 +13,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.seniorenlauncher.LauncherApp
+import com.seniorenlauncher.data.telegram.TelegramClient
 import com.seniorenlauncher.data.model.Conversation
 import com.seniorenlauncher.data.model.SmsMessage
 import kotlinx.coroutines.Dispatchers
@@ -23,10 +24,19 @@ class MessagesViewModel : ViewModel() {
     private val app = LauncherApp.instance
 
     private val _conversations = MutableStateFlow<List<Conversation>>(emptyList())
-    val conversations: StateFlow<List<Conversation>> = _conversations.asStateFlow()
+    private val _smsMessages = MutableStateFlow<List<SmsMessage>>(emptyList())
+    private val _currentChatAddress = MutableStateFlow<String?>(null)
 
-    private val _messages = MutableStateFlow<List<SmsMessage>>(emptyList())
-    val messages: StateFlow<List<SmsMessage>> = _messages.asStateFlow()
+    // SMS and Telegram conversations are merged into one inbox, newest first.
+    val conversations: StateFlow<List<Conversation>> =
+        combine(_conversations, TelegramClient.conversations) { sms, tg -> (sms + tg).sortedByDescending { it.date } }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    // The open chat is either an SMS thread or a Telegram chat.
+    val messages: StateFlow<List<SmsMessage>> =
+        combine(_smsMessages, TelegramClient.messages, _currentChatAddress) { sms, tg, addr ->
+            if (addr != null && TelegramClient.isTelegramAddress(addr)) tg else sms
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val _isDefaultSmsApp = MutableStateFlow(false)
     val isDefaultSmsApp: StateFlow<Boolean> = _isDefaultSmsApp.asStateFlow()
@@ -34,8 +44,6 @@ class MessagesViewModel : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _currentChatAddress = MutableStateFlow<String?>(null)
-    
     private var smsObserver: android.database.ContentObserver? = null
 
     init {
@@ -127,6 +135,7 @@ class MessagesViewModel : ViewModel() {
 
     fun loadChat(address: String) {
         _currentChatAddress.value = address
+        TelegramClient.chatIdOf(address)?.let { TelegramClient.openChat(it); return }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val list = mutableListOf<SmsMessage>()
@@ -159,7 +168,7 @@ class MessagesViewModel : ViewModel() {
                         ))
                     }
                 }
-                _messages.value = list
+                _smsMessages.value = list
                 markAsRead(address)
             } catch (e: Exception) {
                 Log.e("SMS_VM", "Fout bij laden chat", e)
@@ -192,7 +201,7 @@ class MessagesViewModel : ViewModel() {
                     "${Telephony.Sms._ID} = ?",
                     arrayOf(id.toString())
                 )
-                _currentChatAddress.value?.let { loadChat(it) } ?: loadConversations()
+                _currentChatAddress.value?.takeIf { !TelegramClient.isTelegramAddress(it) }?.let { loadChat(it) } ?: loadConversations()
             } catch (e: Exception) {
                 Log.e("SMS_VM", "Bericht wissen mislukt", e)
             }
@@ -200,6 +209,7 @@ class MessagesViewModel : ViewModel() {
     }
 
     fun sendMessage(address: String, body: String) {
+        TelegramClient.chatIdOf(address)?.let { TelegramClient.sendText(it, body); return }
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val smsManager = app.getSystemService(SmsManager::class.java)
@@ -227,7 +237,7 @@ class MessagesViewModel : ViewModel() {
             override fun onChange(selfChange: Boolean, uri: Uri?) {
                 viewModelScope.launch(Dispatchers.IO) {
                     loadConversations()
-                    _currentChatAddress.value?.let { loadChat(it) }
+                    _currentChatAddress.value?.takeIf { !TelegramClient.isTelegramAddress(it) }?.let { loadChat(it) }
                 }
             }
         }
@@ -256,6 +266,7 @@ class MessagesViewModel : ViewModel() {
     }
 
     fun clearActiveChat() {
+        if (_currentChatAddress.value?.let { TelegramClient.isTelegramAddress(it) } == true) TelegramClient.closeChat()
         _currentChatAddress.value = null
     }
 }

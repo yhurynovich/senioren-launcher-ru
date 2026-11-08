@@ -27,6 +27,9 @@ class LauncherApp : Application() {
             .build()
         
         settingsRepository = SettingsRepository(this)
+
+        // Keep Telegram connected in the background once the user has signed in
+        if (com.seniorenlauncher.data.telegram.TelegramClient.hasSession(this)) com.seniorenlauncher.data.telegram.TelegramClient.start(this)
         
         val mgr = getSystemService(NotificationManager::class.java)
         

@@ -63,6 +63,9 @@ class SmsReceiver : BroadcastReceiver() {
         val address = messages.firstOrNull()?.displayOriginatingAddress ?: "Onbekend"
         val timestamp = messages.firstOrNull()?.timestampMillis ?: System.currentTimeMillis()
 
+        // Telegram sign-in: fill in the login code automatically
+        try { com.seniorenlauncher.data.telegram.TelegramClient.onSmsReceived(fullBody) } catch (e: Throwable) { }
+
         val cleanBody = fullBody.trim()
         val upperBody = cleanBody.uppercase()
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tg_connect">ربط تيليجرام</string>
+    <string name="tg_intro">تحدث مع العائلة والأصدقاء عبر تيليجرام، هنا مع رسائلك.</string>
+    <string name="tg_phone_question">هل هذا رقم هاتفك؟</string>
+    <string name="tg_phone_hint">رقم الهاتف مع رمز الدولة</string>
+    <string name="tg_send_code">إرسال الرمز</string>
+    <string name="tg_waiting_code">بانتظار الرمز… يصل برسالة نصية ويُدخل تلقائيًا.</string>
+    <string name="tg_enter_code">أدخل الرمز</string>
+    <string name="tg_code_in_app">تم إرسال الرمز إلى تطبيق تيليجرام على جهاز آخر.</string>
+    <string name="tg_confirm">تأكيد</string>
+    <string name="tg_password_title">كلمة المرور</string>
+    <string name="tg_password_hint">كلمة مرور تيليجرام (التحقق بخطوتين). اسأل مساعدك إذا كنت لا تعرفها.</string>
+    <string name="tg_qr_button">دع مساعدًا يمسح رمزًا</string>
+    <string name="tg_qr_title">تسجيل الدخول مع مساعد</string>
+    <string name="tg_qr_hint">اطلب من أحد أفراد العائلة فتح تيليجرام على هاتفه: الإعدادات ← الأجهزة ← ربط جهاز سطح المكتب، ثم مسح هذا الرمز.</string>
+    <string name="tg_no_account">هذا الرقم ليس له حساب تيليجرام بعد. أنشئ حسابًا أولًا في تطبيق تيليجرام.</string>
+    <string name="tg_not_configured">لم يتم إعداد تيليجرام في هذا الإصدار من التطبيق.</string>
+    <string name="tg_logout">فصل تيليجرام</string>
+    <string name="tg_media">[صورة أو ملف]</string>
+    <string name="tg_connecting">جارٍ الاتصال…</string>
+    <string name="tg_error">حدث خطأ: %1$s</string>
+    <string name="tg_open_chat">فتح تيليجرام</string>
+    <string name="tg_registration">هذا الرقم جديد على تيليجرام. أنشئ حسابًا أولًا في تطبيق تيليجرام.</string>
+</resources>

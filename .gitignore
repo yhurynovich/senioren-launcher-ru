@@ -20,3 +20,6 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
+
+# Telegram API credentials
+telegram.properties

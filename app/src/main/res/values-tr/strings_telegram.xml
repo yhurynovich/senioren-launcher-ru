@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tg_connect">Telegram\'ı bağla</string>
+    <string name="tg_intro">Aile ve arkadaşlarınızla Telegram\'da, mesajlarınızın yanında sohbet edin.</string>
+    <string name="tg_phone_question">Bu sizin telefon numaranız mı?</string>
+    <string name="tg_phone_hint">Ülke kodlu telefon numarası</string>
+    <string name="tg_send_code">Kodu gönder</string>
+    <string name="tg_waiting_code">Kod bekleniyor… SMS ile gelir ve otomatik girilir.</string>
+    <string name="tg_enter_code">Kodu girin</string>
+    <string name="tg_code_in_app">Kod, başka bir cihazdaki Telegram uygulamanıza gönderildi.</string>
+    <string name="tg_confirm">Onayla</string>
+    <string name="tg_password_title">Parola</string>
+    <string name="tg_password_hint">Telegram parolanız (iki adımlı doğrulama). Bilmiyorsanız yardımcınıza sorun.</string>
+    <string name="tg_qr_button">Yardımcının kod okutmasına izin ver</string>
+    <string name="tg_qr_title">Yardımcıyla giriş yap</string>
+    <string name="tg_qr_hint">Bir aile üyesinden kendi telefonunda Telegram\'ı açmasını isteyin: Ayarlar → Cihazlar → Masaüstü Cihazı Bağla, ve bu kodu taratın.</string>
+    <string name="tg_no_account">Bu numaranın henüz Telegram hesabı yok. Önce Telegram uygulamasında bir hesap oluşturun.</string>
+    <string name="tg_not_configured">Telegram bu uygulama sürümünde ayarlanmamış.</string>
+    <string name="tg_logout">Telegram bağlantısını kes</string>
+    <string name="tg_media">[Fotoğraf veya dosya]</string>
+    <string name="tg_connecting">Bağlanıyor…</string>
+    <string name="tg_error">Bir sorun oluştu: %1$s</string>
+    <string name="tg_open_chat">Telegram\'ı aç</string>
+    <string name="tg_registration">Bu numara Telegram\'da yeni. Önce Telegram uygulamasında bir hesap oluşturun.</string>
+</resources>

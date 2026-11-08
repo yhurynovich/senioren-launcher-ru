@@ -42,6 +42,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.seniorenlauncher.data.model.Conversation
 import com.seniorenlauncher.data.model.SmsMessage
+import com.seniorenlauncher.data.telegram.TelegramClient
+import com.seniorenlauncher.data.telegram.TgAuth
 import com.seniorenlauncher.ui.components.ScreenHeader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -96,7 +98,7 @@ fun MessagesScreen(
         when (activeView) {
             MessageView.Overview -> onBack()
             MessageView.Chat -> { activeView = MessageView.Overview; selectedAddress = null; messagesVm.clearActiveChat() }
-            MessageView.NewMessage -> activeView = MessageView.Overview
+            MessageView.NewMessage, MessageView.TelegramSetup -> activeView = MessageView.Overview
         }
     }
 
@@ -117,6 +119,7 @@ fun MessagesScreen(
                             MessageView.Overview -> i18n(R.string.berichten)
                             MessageView.Chat -> selectedName ?: selectedAddress ?: "Chat"
                             MessageView.NewMessage -> i18n(R.string.nieuw_2)
+                            MessageView.TelegramSetup -> "Telegram"
                         },
                         onBack = backHandler
                     )
@@ -158,6 +161,7 @@ fun MessagesScreen(
                                     activeView = MessageView.Chat
                                 },
                                 onNewMessageClick = { activeView = MessageView.NewMessage },
+                                onTelegramSetupClick = { activeView = MessageView.TelegramSetup },
                                 zoom = textZoom
                             )
                             MessageView.Chat -> ChatScreen(address = selectedAddress ?: "", messagesVm = messagesVm, zoom = textZoom)
@@ -168,6 +172,7 @@ fun MessagesScreen(
                                     activeView = MessageView.Chat
                                 }
                             )
+                            MessageView.TelegramSetup -> TelegramSetupScreen(onDone = { activeView = MessageView.Overview })
                         }
                     }
                 }
@@ -176,11 +181,12 @@ fun MessagesScreen(
     }
 }
 
-enum class MessageView { Overview, Chat, NewMessage }
+enum class MessageView { Overview, Chat, NewMessage, TelegramSetup }
 
 @Composable
-fun ConversationOverview(messagesVm: MessagesViewModel, onConversationClick: (Conversation) -> Unit, onNewMessageClick: () -> Unit, zoom: Float) {
+fun ConversationOverview(messagesVm: MessagesViewModel, onConversationClick: (Conversation) -> Unit, onNewMessageClick: () -> Unit, onTelegramSetupClick: () -> Unit, zoom: Float) {
     val conversations by messagesVm.conversations.collectAsState()
+    val tgAuth by TelegramClient.auth.collectAsState()
     val isLoading by messagesVm.isLoading.collectAsState()
 
     LaunchedEffect(Unit) { messagesVm.loadConversations() }
@@ -210,6 +216,21 @@ fun ConversationOverview(messagesVm: MessagesViewModel, onConversationClick: (Co
                 Icon(Icons.Default.Edit, null, tint = Color.White, modifier = Modifier.size(28.dp))
                 Spacer(Modifier.width(12.dp))
                 Text(i18n(R.string.nieuw_bericht_schrijven), fontSize = 20.sp, fontWeight = FontWeight.Black, color = Color.White)
+            }
+        }
+
+        if (TelegramClient.isConfigured && tgAuth !is TgAuth.Ready) {
+            Surface(
+                onClick = onTelegramSetupClick,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp).height(64.dp),
+                color = Color(0xFF2AABEE),
+                shape = RoundedCornerShape(40.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                    Icon(Icons.Default.Send, null, tint = Color.White, modifier = Modifier.size(26.dp))
+                    Spacer(Modifier.width(12.dp))
+                    Text(i18n(R.string.tg_connect), fontSize = 18.sp, fontWeight = FontWeight.Black, color = Color.White)
+                }
             }
         }
 
@@ -266,6 +287,11 @@ fun ConversationItem(conv: Conversation, onClick: (Conversation) -> Unit, zoom: 
                     if (!conv.isRead) {
                         Spacer(Modifier.width(8.dp))
                         Box(Modifier.size(12.dp).background(Color(0xFF10B981), CircleShape))
+                    }
+                    if (TelegramClient.isTelegramAddress(conv.address)) {
+                        Spacer(Modifier.width(8.dp))
+                        Text("Telegram", fontSize = (13 * zoom).sp, fontWeight = FontWeight.Black, color = Color.White,
+                            modifier = Modifier.background(Color(0xFF2AABEE), RoundedCornerShape(12.dp)).padding(horizontal = 8.dp, vertical = 2.dp))
                     }
                 }
                 Text(conv.snippet, fontSize = (18 * zoom).sp, maxLines = 1, overflow = TextOverflow.Ellipsis, color = Color.White.copy(alpha = 0.6f))
@@ -383,6 +409,8 @@ fun MessageBubble(message: SmsMessage, zoom: Float) {
 
 @Composable
 fun NewMessageScreen(onContactSelected: (String, String) -> Unit) {
+    val tgAuth by TelegramClient.auth.collectAsState()
+    var tgChecking by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     var contacts by remember { mutableStateOf(emptyList<Pair<String, String>>()) }
     var frequent by remember { mutableStateOf(emptySet<String>()) }
@@ -461,9 +489,25 @@ fun NewMessageScreen(onContactSelected: (String, String) -> Unit) {
                             Text(contact.first, fontSize = 20.sp, fontWeight = FontWeight.Black)
                             Text(contact.second, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
+                        Spacer(Modifier.weight(1f))
                         if (contact.second in frequent) {
-                            Spacer(Modifier.weight(1f))
                             Icon(Icons.Default.Star, null, tint = Color(0xFFFBBF24), modifier = Modifier.size(32.dp))
+                        }
+                        if (tgAuth is TgAuth.Ready) {
+                            Spacer(Modifier.width(8.dp))
+                            FilledIconButton(
+                                onClick = {
+                                    if (tgChecking) return@FilledIconButton
+                                    tgChecking = true
+                                    TelegramClient.findChatByPhone(contact.second) { id ->
+                                        tgChecking = false
+                                        if (id != null) onContactSelected(contact.first, TelegramClient.addressOf(id))
+                                        else android.widget.Toast.makeText(context, i18n(R.string.tg_no_account), android.widget.Toast.LENGTH_LONG).show()
+                                    }
+                                },
+                                modifier = Modifier.size(56.dp),
+                                colors = IconButtonDefaults.filledIconButtonColors(containerColor = Color(0xFF2AABEE))
+                            ) { Icon(Icons.Default.Send, "Telegram", tint = Color.White) }
                         }
                     }
                 }

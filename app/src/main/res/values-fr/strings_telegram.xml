@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tg_connect">Connecter Telegram</string>
+    <string name="tg_intro">Discutez avec votre famille et vos amis sur Telegram, directement avec vos messages.</string>
+    <string name="tg_phone_question">Est-ce votre numéro de téléphone ?</string>
+    <string name="tg_phone_hint">Numéro de téléphone avec indicatif du pays</string>
+    <string name="tg_send_code">Envoyer le code</string>
+    <string name="tg_waiting_code">En attente du code… Il arrive par SMS et se remplit automatiquement.</string>
+    <string name="tg_enter_code">Saisissez le code</string>
+    <string name="tg_code_in_app">Le code a été envoyé à votre application Telegram sur un autre appareil.</string>
+    <string name="tg_confirm">Confirmer</string>
+    <string name="tg_password_title">Mot de passe</string>
+    <string name="tg_password_hint">Votre mot de passe Telegram (validation en deux étapes). Demandez à votre aidant si vous ne le connaissez pas.</string>
+    <string name="tg_qr_button">Laisser un aidant scanner un code</string>
+    <string name="tg_qr_title">Se connecter avec un aidant</string>
+    <string name="tg_qr_hint">Demandez à un proche d\'ouvrir Telegram sur son téléphone : Paramètres → Appareils → Associer un appareil de bureau, puis de scanner ce code.</string>
+    <string name="tg_no_account">Ce numéro n\'a pas encore de compte Telegram. Créez-en un d\'abord dans l\'application Telegram.</string>
+    <string name="tg_not_configured">Telegram n\'est pas configuré dans cette version de l\'application.</string>
+    <string name="tg_logout">Déconnecter Telegram</string>
+    <string name="tg_media">[Photo ou fichier]</string>
+    <string name="tg_connecting">Connexion…</string>
+    <string name="tg_error">Un problème est survenu : %1$s</string>
+    <string name="tg_open_chat">Ouvrir Telegram</string>
+    <string name="tg_registration">Ce numéro est nouveau sur Telegram. Créez d\'abord un compte dans l\'application Telegram.</string>
+</resources>

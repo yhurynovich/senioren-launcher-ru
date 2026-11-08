@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tg_connect">Подключить Telegram</string>
+    <string name="tg_intro">Общайтесь с семьёй и друзьями в Telegram прямо среди своих сообщений.</string>
+    <string name="tg_phone_question">Это ваш номер телефона?</string>
+    <string name="tg_phone_hint">Номер телефона с кодом страны</string>
+    <string name="tg_send_code">Отправить код</string>
+    <string name="tg_waiting_code">Ждём код… Он придёт по SMS и подставится автоматически.</string>
+    <string name="tg_enter_code">Введите код</string>
+    <string name="tg_code_in_app">Код отправлен в приложение Telegram на другом устройстве.</string>
+    <string name="tg_confirm">Подтвердить</string>
+    <string name="tg_password_title">Пароль</string>
+    <string name="tg_password_hint">Ваш пароль Telegram (двухэтапная проверка). Спросите помощника, если не знаете его.</string>
+    <string name="tg_qr_button">Пусть помощник отсканирует код</string>
+    <string name="tg_qr_title">Войти с помощником</string>
+    <string name="tg_qr_hint">Попросите родственника открыть Telegram на своём телефоне: Настройки → Устройства → Подключить устройство, и отсканировать этот код.</string>
+    <string name="tg_no_account">У этого номера ещё нет аккаунта Telegram. Сначала создайте его в приложении Telegram.</string>
+    <string name="tg_not_configured">Telegram не настроен в этой версии приложения.</string>
+    <string name="tg_logout">Отключить Telegram</string>
+    <string name="tg_media">[Фото или файл]</string>
+    <string name="tg_connecting">Подключение…</string>
+    <string name="tg_error">Что-то пошло не так: %1$s</string>
+    <string name="tg_open_chat">Открыть Telegram</string>
+    <string name="tg_registration">Этот номер новый в Telegram. Сначала создайте аккаунт в приложении Telegram.</string>
+</resources>

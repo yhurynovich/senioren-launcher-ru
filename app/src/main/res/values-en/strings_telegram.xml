@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tg_connect">Connect Telegram</string>
+    <string name="tg_intro">Chat with family and friends on Telegram, right here with your messages.</string>
+    <string name="tg_phone_question">Is this your phone number?</string>
+    <string name="tg_phone_hint">Phone number with country code</string>
+    <string name="tg_send_code">Send code</string>
+    <string name="tg_waiting_code">Waiting for the code… It arrives by text message and is filled in automatically.</string>
+    <string name="tg_enter_code">Enter the code</string>
+    <string name="tg_code_in_app">The code was sent to your Telegram app on another device.</string>
+    <string name="tg_confirm">Confirm</string>
+    <string name="tg_password_title">Password</string>
+    <string name="tg_password_hint">Your Telegram password (two-step verification). Ask your helper if you don\'t know it.</string>
+    <string name="tg_qr_button">Let a helper scan a code</string>
+    <string name="tg_qr_title">Sign in with a helper</string>
+    <string name="tg_qr_hint">Ask a family member to open Telegram on their phone: Settings → Devices → Link Desktop Device, and scan this code.</string>
+    <string name="tg_no_account">This number has no Telegram account yet. Create one in the Telegram app first.</string>
+    <string name="tg_not_configured">Telegram is not set up in this version of the app.</string>
+    <string name="tg_logout">Disconnect Telegram</string>
+    <string name="tg_media">[Photo or file]</string>
+    <string name="tg_connecting">Connecting…</string>
+    <string name="tg_error">Something went wrong: %1$s</string>
+    <string name="tg_open_chat">Open Telegram</string>
+    <string name="tg_registration">This number is new to Telegram. Create an account in the Telegram app first.</string>
+</resources>

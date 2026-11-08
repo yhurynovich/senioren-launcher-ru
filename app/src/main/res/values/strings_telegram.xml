@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tg_connect">Telegram koppelen</string>
+    <string name="tg_intro">Chat met familie en vrienden via Telegram, gewoon bij uw berichten.</string>
+    <string name="tg_phone_question">Is dit uw telefoonnummer?</string>
+    <string name="tg_phone_hint">Telefoonnummer met landcode</string>
+    <string name="tg_send_code">Code versturen</string>
+    <string name="tg_waiting_code">Wachten op de code… Die komt per sms en wordt automatisch ingevuld.</string>
+    <string name="tg_enter_code">Voer de code in</string>
+    <string name="tg_code_in_app">De code is naar uw Telegram-app op een ander toestel gestuurd.</string>
+    <string name="tg_confirm">Bevestigen</string>
+    <string name="tg_password_title">Wachtwoord</string>
+    <string name="tg_password_hint">Uw Telegram-wachtwoord (verificatie in twee stappen). Vraag uw helper als u het niet weet.</string>
+    <string name="tg_qr_button">Laat een helper een code scannen</string>
+    <string name="tg_qr_title">Inloggen met een helper</string>
+    <string name="tg_qr_hint">Vraag een familielid om Telegram op zijn of haar telefoon te openen: Instellingen → Apparaten → Desktopapparaat koppelen, en deze code te scannen.</string>
+    <string name="tg_no_account">Dit nummer heeft nog geen Telegram-account. Maak eerst een account in de Telegram-app.</string>
+    <string name="tg_not_configured">Telegram is niet ingesteld in deze versie van de app.</string>
+    <string name="tg_logout">Telegram loskoppelen</string>
+    <string name="tg_media">[Foto of bestand]</string>
+    <string name="tg_connecting">Verbinden…</string>
+    <string name="tg_error">Er ging iets mis: %1$s</string>
+    <string name="tg_open_chat">Telegram openen</string>
+    <string name="tg_registration">Dit nummer is nieuw bij Telegram. Maak eerst een account in de Telegram-app.</string>
+</resources>
