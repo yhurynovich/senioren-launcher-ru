@@ -385,6 +385,7 @@ fun MessageBubble(message: SmsMessage, zoom: Float) {
 fun NewMessageScreen(onContactSelected: (String, String) -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
     var contacts by remember { mutableStateOf(emptyList<Pair<String, String>>()) }
+    var frequent by remember { mutableStateOf(emptySet<String>()) }
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -399,7 +400,22 @@ fun NewMessageScreen(onContactSelected: (String, String) -> Unit) {
                     list.add(name to phone)
                 }
             }
-            contacts = list.distinctBy { it.second.replace(" ", "") }
+            val unique = list.distinctBy { it.second.replace(" ", "") }
+            // Count sent SMS per number so the most-written contacts float to the top
+            val counts = mutableMapOf<String, Int>()
+            fun key(n: String) = n.filter { it.isDigit() }.takeLast(9)
+            try {
+                context.contentResolver.query(android.provider.Telephony.Sms.Sent.CONTENT_URI, arrayOf(android.provider.Telephony.Sms.ADDRESS), null, null, null)?.use { c ->
+                    while (c.moveToNext()) {
+                        val k = key(c.getString(0) ?: "")
+                        if (k.isNotEmpty()) counts[k] = (counts[k] ?: 0) + 1
+                    }
+                }
+            } catch (e: Exception) { }
+            frequent = unique.filter { (counts[key(it.second)] ?: 0) > 0 }
+                .sortedByDescending { counts[key(it.second)] ?: 0 }
+                .take(5).map { it.second }.toSet()
+            contacts = unique.sortedWith(compareByDescending<Pair<String, String>> { counts[key(it.second)] ?: 0 }.thenBy { it.first.lowercase() })
         }
     }
 
@@ -444,6 +460,10 @@ fun NewMessageScreen(onContactSelected: (String, String) -> Unit) {
                         Column {
                             Text(contact.first, fontSize = 20.sp, fontWeight = FontWeight.Black)
                             Text(contact.second, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                        if (contact.second in frequent) {
+                            Spacer(Modifier.weight(1f))
+                            Icon(Icons.Default.Star, null, tint = Color(0xFFFBBF24), modifier = Modifier.size(32.dp))
                         }
                     }
                 }
