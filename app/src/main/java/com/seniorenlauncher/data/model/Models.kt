@@ -141,7 +141,7 @@ val ALL_APPS: List<AppInfo> get() = listOf(
     AppInfo("meds", i18n(R.string.medicijnen_2), "💊", "💊", 0xFFDC2626),
     AppInfo("weather", i18n(R.string.weer), "🌤️", "🌤️", 0xFF0EA5E9),
     AppInfo("flashlight", i18n(R.string.zaklamp), "🔦", "🔦", 0xFFFBBF24),
-    AppInfo("magnifier", i18n(R.string.vergrootglas), "🔍", "🔍", 0xFF6366F1),
+    AppInfo("magnifier", i18n(R.string.vergrootglas), "🔍", "🔍", 0xFF2563EB),
     AppInfo("notes", i18n(R.string.notities), "📝", "📝", 0xFF84CC16),
     AppInfo("radio", i18n(R.string.radio), "📻", "📻", 0xFFA855F7),
     AppInfo("wifi", i18n(R.string.wifi), "📶", "📶", 0xFF4A5568),

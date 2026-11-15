@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="upd_channel">Uygulama güncellemeleri</string>
+    <string name="upd_title">Yeni sürüm %1$s mevcut</string>
+    <string name="upd_text">Yüklemek için dokunun.</string>
+</resources>

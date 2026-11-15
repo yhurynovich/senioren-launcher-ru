@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tgc_title">Telegram-Anruf</string>
+    <string name="tgc_incoming">Eingehender Telegram-Anruf</string>
+    <string name="tgc_calling">Wird angerufen…</string>
+    <string name="tgc_ringing">Klingelt…</string>
+    <string name="tgc_connecting">Verbinden…</string>
+    <string name="tgc_ended">Anruf beendet</string>
+    <string name="tgc_declined">Anruf abgelehnt</string>
+    <string name="tgc_busy">Besetzt</string>
+    <string name="tgc_no_answer">Keine Antwort</string>
+    <string name="tgc_failed">Anruf fehlgeschlagen</string>
+    <string name="tgc_mic_on">MIKROFON AN</string>
+    <string name="tgc_mic_off">MIKROFON AUS</string>
+    <string name="tgc_ongoing">Telegram-Anruf läuft</string>
+    <string name="tgc_channel">Telegram-Anrufe</string>
+    <string name="tgc_call">Anrufen</string>
+    <string name="tgc_incoming_video">Eingehender Telegram-Videoanruf</string>
+    <string name="tgc_camera_on">KAMERA AN</string>
+    <string name="tgc_camera_off">KAMERA AUS</string>
+    <string name="tgc_switch_camera">KAMERA WECHSELN</string>
+    <string name="tgc_start_video">KAMERA EINSCHALTEN</string>
+    <string name="tgc_video">Video</string>
+    <string name="tgc_no_sim_no_tg">Keine SIM-Karte, und dieser Kontakt hat kein Telegram. Der Anruf ist nicht möglich.</string>
+    <string name="tgc_calling_via_tg">Anruf über Telegram…</string>
+</resources>

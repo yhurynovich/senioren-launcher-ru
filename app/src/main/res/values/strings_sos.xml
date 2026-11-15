@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sos_not_coming_title">HULP KOMT NIET</string>
+    <string name="sos_not_coming_notif">Het noodsignaal is niet verstuurd. Niemand is gewaarschuwd.</string>
+    <string name="sos_reason_no_contacts">Er zijn geen SOS-contacten ingesteld.</string>
+    <string name="sos_reason_no_network">Er is geen simkaart en Telegram is niet bereikbaar.</string>
+    <string name="sos_reason_send_failed">De sms- en Telegram-berichten konden niet worden verstuurd.</string>
+    <string name="sos_call_emergency">BEL %1$s</string>
+    <string name="sos_emergency_hint">Het alarmnummer %1$s werkt ook zonder simkaart.</string>
+    <string name="sos_try_again">OPNIEUW</string>
+    <string name="sos_close">SLUITEN</string>
+    <string name="sos_sending">Noodsignaal wordt verstuurd…</string>
+    <string name="sos_sent_summary">Noodsignaal verstuurd: %1$d per sms, %2$d via Telegram.</string>
+    <string name="cg_title">NOODGEVAL: %1$s HEEFT HULP NODIG</string>
+    <string name="cg_call_back">TERUGBELLEN</string>
+    <string name="cg_open_map">KAART OPENEN</string>
+    <string name="cg_stop">ALARM STOPPEN</string>
+    <string name="sos_contact_tip">Tip voor uw SOS-contacten: zet op de iPhone bij dit nummer "Noodgevallen omzeilen" aan; zet het op Android bij de favorieten en sta favorieten en herhaalde bellers toe in Niet storen. Met deze app op hun telefoon klinkt een SOS als luid alarm.</string>
+</resources>

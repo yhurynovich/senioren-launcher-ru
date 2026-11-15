@@ -1,5 +1,6 @@
 package com.seniorenlauncher.ui.components
 
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import android.graphics.drawable.Drawable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -209,8 +210,15 @@ fun BigButton(
     }
 }
 
+/**
+ * "Go to the home screen", provided by AppNavigation. The header's back button uses it so it always
+ * leads straight home, however deep the senior is (Android's own back gesture still goes one step back).
+ */
+val LocalGoHome = androidx.compose.runtime.staticCompositionLocalOf<(() -> Unit)?> { null }
+
 @Composable
 fun ScreenHeader(title: String, onBack: () -> Unit) {
+    val goHome = LocalGoHome.current
     // The status bar is hidden; drop the back button just below a camera hole on the left or in the middle.
     val cutout = rememberTopCutout()
     val topPad = if (cutout.left > 0.dp || cutout.center > 0.dp) cutout.height else 8.dp
@@ -227,18 +235,18 @@ fun ScreenHeader(title: String, onBack: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
-                onClick = onBack,
+                onClick = { (goHome ?: onBack)() },
                 modifier = Modifier.size(64.dp),
                 shape = RoundedCornerShape(28.dp),
                 color = Color(0xFF1E293B), // Slate 800
                 border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        "←", 
-                        fontSize = 36.sp, 
-                        fontWeight = FontWeight.Black, 
-                        color = Color.White
+                    androidx.compose.material3.Icon(
+                        androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = com.seniorenlauncher.util.i18n(com.seniorenlauncher.R.string.terug),
+                        modifier = Modifier.size(44.dp),
+                        tint = Color.White
                     )
                 }
             }

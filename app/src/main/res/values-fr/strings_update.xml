@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="upd_channel">Mises à jour</string>
+    <string name="upd_title">Nouvelle version %1$s disponible</string>
+    <string name="upd_text">Touchez pour installer.</string>
+</resources>

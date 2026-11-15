@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sos_not_coming_title">YARDIM GELMEYECEK</string>
+    <string name="sos_not_coming_notif">SOS alarmı gönderilmedi. Kimse uyarılmadı.</string>
+    <string name="sos_reason_no_contacts">Hiç SOS kişisi ayarlanmamış.</string>
+    <string name="sos_reason_no_network">SIM kart yok ve Telegram\'a ulaşılamıyor.</string>
+    <string name="sos_reason_send_failed">SMS ve Telegram mesajları gönderilemedi.</string>
+    <string name="sos_call_emergency">%1$s ARA</string>
+    <string name="sos_emergency_hint">Acil durum numarası %1$s SIM kart olmadan da çalışır.</string>
+    <string name="sos_try_again">TEKRAR DENE</string>
+    <string name="sos_close">KAPAT</string>
+    <string name="sos_sending">Alarm gönderiliyor…</string>
+    <string name="sos_sent_summary">Alarm gönderildi: SMS ile %1$d, Telegram ile %2$d.</string>
+    <string name="cg_title">ACİL DURUM: %1$s YARDIMA İHTİYACI VAR</string>
+    <string name="cg_call_back">GERİ ARA</string>
+    <string name="cg_open_map">HARİTAYI AÇ</string>
+    <string name="cg_stop">ALARMI DURDUR</string>
+    <string name="sos_contact_tip">SOS kişileriniz için ipucu: iPhone\'da bu numara için "Acil Durum Atlatma"yı açın; Android\'de favorilere ekleyin ve Rahatsız Etmeyin\'de favorilere ve tekrar arayanlara izin verin. Bu uygulama telefonlarında yüklüyse SOS yüksek sesli alarm olarak çalar.</string>
+</resources>

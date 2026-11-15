@@ -32,7 +32,7 @@ object TelegramCalls {
     private const val CALL_MIMETYPE = "vnd.android.cursor.item/vnd.org.telegram.messenger.android.call"
 
     /** Emergency and service numbers always go over the normal phone network. */
-    private fun isServiceNumber(number: String): Boolean {
+    fun isServiceNumber(number: String): Boolean {
         val digits = number.filter { it.isDigit() }
         return !number.trim().startsWith("+") && digits.length <= 5
     }
@@ -43,6 +43,46 @@ object TelegramCalls {
         if (settings.telegramCallsAll) return true
         return settings.telegramCallsInternational && isInternational(context, number)
     }
+
+    /**
+     * Places a call to [number] the best available way:
+     * - no SIM card: Telegram only (in the launcher, else the official Telegram app); if the contact
+     *   has no Telegram, a clear message says the call cannot be made;
+     * - SIM card and the settings prefer Telegram for this number: Telegram in the launcher, else the
+     *   official app, else a normal call;
+     * - otherwise [phoneCall] (normal call). Emergency/short numbers always use [phoneCall].
+     */
+    fun placeCall(context: Context, number: String, phoneCall: () -> Unit) {
+        if (isServiceNumber(number)) { phoneCall(); return }
+        val noSim = !SimUtil.hasUsableSim(context)
+        val prefer = noSim || runBlocking {
+            withTimeoutOrNull(500) { LauncherApp.instance.settingsRepository.settingsFlow.first() }
+        }?.let { shouldUseTelegram(context, number, it) } == true
+        if (!prefer) { phoneCall(); return }
+
+        fun fallback() {
+            if (tryCall(context, number)) return
+            if (noSim) {
+                android.widget.Toast.makeText(context, i18n(com.seniorenlauncher.R.string.tgc_no_sim_no_tg), android.widget.Toast.LENGTH_LONG).show()
+            } else phoneCall()
+        }
+        val tg = com.seniorenlauncher.data.telegram.TelegramClient
+        if (tg.auth.value !is com.seniorenlauncher.data.telegram.TgAuth.Ready) { fallback(); return }
+        tg.findChatByPhone(number) { chatId ->
+            if (chatId != null && chatId > 0) {
+                val name = contactName(context, number) ?: tg.displayName(chatId)
+                com.seniorenlauncher.data.telegram.TgCallManager.start(context, chatId, name)
+            } else fallback()
+        }
+    }
+
+    private fun contactName(context: Context, number: String): String? = try {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) null
+        else context.contentResolver.query(
+            Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number)),
+            arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME), null, null, null
+        )?.use { c -> if (c.moveToFirst()) c.getString(0) else null }
+    } catch (e: Exception) { null }
 
     /**
      * Calls through Telegram if the settings prefer it for this number and the contact has Telegram.

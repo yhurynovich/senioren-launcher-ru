@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="upd_channel">App-updates</string>
+    <string name="upd_title">Nieuwe versie %1$s beschikbaar</string>
+    <string name="upd_text">Tik om te installeren.</string>
+</resources>

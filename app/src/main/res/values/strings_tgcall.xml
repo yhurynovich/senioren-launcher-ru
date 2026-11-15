@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tgc_title">Telegram-oproep</string>
+    <string name="tgc_incoming">Inkomende Telegram-oproep</string>
+    <string name="tgc_calling">Bellen…</string>
+    <string name="tgc_ringing">Gaat over…</string>
+    <string name="tgc_connecting">Verbinden…</string>
+    <string name="tgc_ended">Gesprek beëindigd</string>
+    <string name="tgc_declined">Oproep geweigerd</string>
+    <string name="tgc_busy">In gesprek</string>
+    <string name="tgc_no_answer">Niet opgenomen</string>
+    <string name="tgc_failed">Bellen is mislukt</string>
+    <string name="tgc_mic_on">MICROFOON AAN</string>
+    <string name="tgc_mic_off">MICROFOON UIT</string>
+    <string name="tgc_ongoing">Telegram-gesprek bezig</string>
+    <string name="tgc_channel">Telegram-oproepen</string>
+    <string name="tgc_call">Bellen</string>
+    <string name="tgc_incoming_video">Inkomend Telegram-videogesprek</string>
+    <string name="tgc_camera_on">CAMERA AAN</string>
+    <string name="tgc_camera_off">CAMERA UIT</string>
+    <string name="tgc_switch_camera">ANDERE CAMERA</string>
+    <string name="tgc_start_video">CAMERA AANZETTEN</string>
+    <string name="tgc_video">Video</string>
+    <string name="tgc_no_sim_no_tg">Geen simkaart, en dit contact heeft geen Telegram. Bellen lukt niet.</string>
+    <string name="tgc_calling_via_tg">Bellen via Telegram…</string>
+</resources>

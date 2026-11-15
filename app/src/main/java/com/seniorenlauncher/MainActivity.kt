@@ -18,6 +18,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import com.seniorenlauncher.ui.AppNavigation
 import com.seniorenlauncher.ui.components.RadioMiniPlayer
 import com.seniorenlauncher.ui.screens.*
@@ -32,6 +34,12 @@ import androidx.core.content.ContextCompat
 import com.seniorenlauncher.service.StepCounterService
 
 class MainActivity : ComponentActivity() {
+
+    companion object {
+        const val NAV_INSTALL_UPDATE = "install_update"
+        const val NAV_SOS_FAILED = "sos_failed"
+        const val NAV_CAREGIVER_SOS = "caregiver_sos"
+    }
     
     private var currentAlarmId = mutableStateOf<Long>(-1L)
     private var alarmTriggered = mutableStateOf<String?>(null)
@@ -111,13 +119,10 @@ class MainActivity : ComponentActivity() {
             
             var currentRoute by remember { mutableStateOf<String?>(null) }
 
-            // Auto-update check bij opstarten
+            // Update check: daily and now, in the background. A newer version shows a notification;
+            // nothing is downloaded until it is tapped (NAV_INSTALL_UPDATE).
             LaunchedEffect(Unit) {
-                val updateManager = UpdateManager(this@MainActivity)
-                val release = updateManager.checkForUpdates()
-                if (release != null) {
-                    updateManager.downloadAndInstall(release)
-                }
+                com.seniorenlauncher.util.UpdateCheckWorker.schedule(this@MainActivity)
 
                 // Start stappenteller als we de permissie hebben
                 if (hasStepPermission()) {
@@ -143,7 +148,20 @@ class MainActivity : ComponentActivity() {
                     if (clearCutoutBand) Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Top))
                     else Modifier.fillMaxSize()
                 ) {
-                    if (isFallDetected) {
+                    val sosStatus by com.seniorenlauncher.service.SOSService.status.collectAsState()
+                    val sosFailed = sosStatus as? com.seniorenlauncher.service.SosStatus.Failed
+                    val caregiverAlert by com.seniorenlauncher.util.CaregiverAlarm.alert.collectAsState()
+                    val cgAlert = caregiverAlert
+                    if (cgAlert != null) {
+                        LaunchedEffect(Unit) { setupLockscreenBypass() }
+                        com.seniorenlauncher.ui.screens.CaregiverSosScreen(cgAlert)
+                    } else if (sosFailed != null) {
+                        LaunchedEffect(Unit) { setupLockscreenBypass() }
+                        com.seniorenlauncher.ui.screens.SosFailedScreen(
+                            reason = sosFailed.reason,
+                            onClose = { com.seniorenlauncher.service.SOSService.clearStatus() }
+                        )
+                    } else if (isFallDetected) {
                         FallDetectionDialog(
                             onConfirm = {
                                 fallDetectedTriggered.value = false
@@ -234,7 +252,7 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        if (intent.getStringExtra("NAVIGATE_TO") == "alarm_trigger" || intent.getStringExtra("NAVIGATE_TO") == "fall_detected") {
+        if (intent.getStringExtra("NAVIGATE_TO") in setOf("alarm_trigger", "fall_detected", NAV_SOS_FAILED, NAV_CAREGIVER_SOS)) {
             setupLockscreenBypass()
         }
         handleIntent(intent)
@@ -259,6 +277,13 @@ class MainActivity : ComponentActivity() {
                 navigateToSmsAddress.value = it.getStringExtra("SMS_ADDRESS")
             } else if (navigateTo == "incoming_call") {
                 navigateToIncomingCall.value = true
+            } else if (navigateTo == NAV_INSTALL_UPDATE) {
+                it.removeExtra("NAVIGATE_TO")
+                // Tapped the "new version" notification: download and install now.
+                lifecycleScope.launch {
+                    val um = UpdateManager(this@MainActivity)
+                    um.checkForUpdates()?.let { release -> um.downloadAndInstall(release) }
+                }
             }
         }
     }

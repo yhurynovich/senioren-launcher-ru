@@ -348,6 +348,20 @@ fun DialerContent(
     val context = LocalContext.current
     var showEmergencyConfirm by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+    // The local emergency number (911 in North America, 112 elsewhere).
+    val emergency = remember { emergencyNumber(context) }
+
+    // Size the keys from the space we really have, so the call row always fits on screen
+    // (the whole UI scales with the text-size setting). Keys never grow past 85dp.
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+    val keyGap = 12.dp
+    // display (90 + 24) + contact name (~44) + spacer (16) + bottom margin (16)
+    val fixedH = 190.dp
+    val byHeight = (maxHeight - fixedH - keyGap * 3) / 5.3f   // 4 key rows + call row (1.3 key)
+    val byWidth = (maxWidth - keyGap * 4) / 3
+    val keySize = minOf(85.dp, byHeight, byWidth).coerceAtLeast(52.dp)
+    val callSize = minOf(110.dp, keySize * 1.3f)
+    val sideSize = minOf(80.dp, keySize)
 
     Column(
         modifier = Modifier
@@ -365,21 +379,30 @@ fun DialerContent(
             color = Color(0xFF1E293B).copy(alpha = 0.5f),
             border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
         ) {
-            Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 16.dp)) {
-                Text(
-                    text = formatPhoneNumberDisplay(phoneNumber),
-                    fontSize = if (phoneNumber.length > 10) 32.sp else 42.sp,
-                    fontWeight = FontWeight.Black,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1
-                )
-                if (phoneNumber.isNotEmpty()) {
-                    IconButton(
-                        onClick = { onNumberChange(phoneNumber.dropLast(1)) },
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                    ) {
-                        Icon(Icons.AutoMirrored.Filled.Backspace, null, modifier = Modifier.size(36.dp), tint = MaterialTheme.colorScheme.primary)
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 12.dp)) {
+                // Same width as the delete button on the right, so the number stays centred.
+                Spacer(Modifier.width(48.dp))
+                BoxWithConstraints(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                    val shown = formatPhoneNumberDisplay(phoneNumber)
+                    // Bold digits are about 0.62 em wide: pick the largest size that fits on one line.
+                    val density = androidx.compose.ui.platform.LocalDensity.current
+                    val fit = with(density) { (maxWidth / (shown.length.coerceAtLeast(1) * 0.62f)).toSp() }
+                    val size = if (fit.value < 42f) fit else 42.sp
+                    Text(
+                        text = shown,
+                        fontSize = size,
+                        fontWeight = FontWeight.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        softWrap = false
+                    )
+                }
+                Box(Modifier.size(48.dp), contentAlignment = Alignment.Center) {
+                    if (phoneNumber.isNotEmpty()) {
+                        IconButton(onClick = { onNumberChange(phoneNumber.dropLast(1)) }) {
+                            Icon(Icons.AutoMirrored.Filled.Backspace, null, modifier = Modifier.size(32.dp), tint = MaterialTheme.colorScheme.primary)
+                        }
                     }
                 }
             }
@@ -401,7 +424,7 @@ fun DialerContent(
             listOf("*", "0", "#")
         )
 
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(keyGap)) {
             keys.forEach { row ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -410,6 +433,7 @@ fun DialerContent(
                     row.forEach { key ->
                         DialerButton(
                             text = key,
+                            size = keySize,
                             onClick = { if (phoneNumber.length < 15) onNumberChange(phoneNumber + key) }
                         )
                     }
@@ -417,7 +441,7 @@ fun DialerContent(
             }
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(16.dp))
 
         // Actions
         Row(
@@ -436,9 +460,9 @@ fun DialerContent(
             Surface(
                 onClick = onSendMessage,
                 interactionSource = interactionSourceSms,
-                modifier = Modifier.size(80.dp).scale(scaleSms),
+                modifier = Modifier.size(sideSize).scale(scaleSms),
                 shape = CircleShape,
-                color = Color(0xFF6366F1), // Indigo
+                color = Color(0xFF2563EB), // Blue
                 border = BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
                 shadowElevation = 8.dp
             ) {
@@ -458,7 +482,7 @@ fun DialerContent(
             Surface(
                 onClick = onCall,
                 interactionSource = interactionSourceCall,
-                modifier = Modifier.size(110.dp).scale(scaleCall),
+                modifier = Modifier.size(callSize).scale(scaleCall),
                 shape = CircleShape,
                 color = Color(0xFF10B981), // Emerald
                 border = BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
@@ -480,19 +504,21 @@ fun DialerContent(
             Surface(
                 onClick = { showEmergencyConfirm = true },
                 interactionSource = interactionSource112,
-                modifier = Modifier.size(80.dp).scale(scale112),
+                modifier = Modifier.size(sideSize).scale(scale112),
                 shape = CircleShape,
                 color = Color(0xFFEF4444), // Red
                 border = BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
                 shadowElevation = 8.dp
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Text("112", fontWeight = FontWeight.Black, fontSize = 24.sp, color = Color.White)
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    Icon(Icons.Default.LocalHospital, null, modifier = Modifier.size(sideSize * 0.32f), tint = Color.White)
+                    Text(emergency, fontWeight = FontWeight.Black, fontSize = 20.sp, color = Color.White, lineHeight = 22.sp)
                 }
             }
         }
         
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(16.dp))
+    }
     }
 
     if (showEmergencyConfirm) {
@@ -505,7 +531,7 @@ fun DialerContent(
                 Button(
                     onClick = {
                         showEmergencyConfirm = false
-                        makeDirectCall(context, "112", allowTelegram = false)
+                        makeDirectCall(context, emergency, allowTelegram = false)
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                     modifier = Modifier.height(64.dp).fillMaxWidth(0.6f),
@@ -524,7 +550,7 @@ fun DialerContent(
 }
 
 @Composable
-fun DialerButton(text: String, onClick: () -> Unit) {
+fun DialerButton(text: String, size: androidx.compose.ui.unit.Dp = 85.dp, onClick: () -> Unit) {
     val context = LocalContext.current
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -541,7 +567,7 @@ fun DialerButton(text: String, onClick: () -> Unit) {
         },
         interactionSource = interactionSource,
         modifier = Modifier
-            .size(85.dp)
+            .size(size)
             .scale(scale),
         shape = RoundedCornerShape(40.dp),
         color = Color(0xFF1E293B).copy(alpha = 0.5f),
@@ -724,7 +750,7 @@ fun ContactListItem(contact: DeviceContact, isFavorite: Boolean, onToggleFavorit
         onClick = onClick,
         interactionSource = interactionSource,
         shape = RoundedCornerShape(40.dp),
-        color = if (contact.isMe) Color(0xFF6366F1).copy(alpha = 0.2f) else Color(0xFF1E293B).copy(alpha = 0.5f),
+        color = if (contact.isMe) Color(0xFF60A5FA).copy(alpha = 0.2f) else Color(0xFF1E293B).copy(alpha = 0.5f),
         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
         modifier = Modifier.fillMaxWidth().scale(scale)
     ) {
@@ -738,7 +764,7 @@ fun ContactListItem(contact: DeviceContact, isFavorite: Boolean, onToggleFavorit
                 )
             } else {
                 Box(
-                    Modifier.size(60.dp).background(Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)), CircleShape),
+                    Modifier.size(60.dp).background(MaterialTheme.colorScheme.primaryContainer, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(contact.name.take(1).uppercase(), color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black)
@@ -861,8 +887,21 @@ fun fetchAllDeviceContacts(context: Context): List<DeviceContact> {
 
 fun makeDirectCall(context: Context, number: String, allowTelegram: Boolean = true) {
     if (number.isEmpty()) return
-    // Telegram first when the settings ask for it and the contact has Telegram; otherwise a normal call.
-    if (allowTelegram && com.seniorenlauncher.util.TelegramCalls.callIfPreferred(context, number)) return
+    // Telegram first when there is no SIM or the settings ask for it (in-app call, then the official
+    // Telegram app); otherwise a normal call. Emergency/short numbers always use the phone network.
+    if (allowTelegram) {
+        com.seniorenlauncher.util.TelegramCalls.placeCall(context, number) { placePhoneCall(context, number) }
+        return
+    }
+    placePhoneCall(context, number)
+}
+
+private fun placePhoneCall(context: Context, number: String) {
+    // Emergency call: the call-back must ring even if the phone was on silent.
+    val digits = number.filter { it.isDigit() }
+    if (digits in setOf("112", "911", "999", "000", "110", "101", "102", "103", "15", "17", "18", "155", "190", "193", "197", "08", "100") ||
+        digits == emergencyNumber(context)
+    ) com.seniorenlauncher.util.EmergencyAudio.enable(context)
     val uri = Uri.parse("tel:${Uri.encode(number)}")
     try {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {

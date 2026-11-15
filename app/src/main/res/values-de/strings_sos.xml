@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sos_not_coming_title">HILFE KOMMT NICHT</string>
+    <string name="sos_not_coming_notif">Der SOS-Alarm wurde nicht gesendet. Niemand wurde benachrichtigt.</string>
+    <string name="sos_reason_no_contacts">Es sind keine SOS-Kontakte eingerichtet.</string>
+    <string name="sos_reason_no_network">Keine SIM-Karte, und Telegram ist nicht erreichbar.</string>
+    <string name="sos_reason_send_failed">Die SMS- und Telegram-Nachrichten konnten nicht gesendet werden.</string>
+    <string name="sos_call_emergency">%1$s ANRUFEN</string>
+    <string name="sos_emergency_hint">Die Notrufnummer %1$s funktioniert auch ohne SIM-Karte.</string>
+    <string name="sos_try_again">NOCHMAL</string>
+    <string name="sos_close">SCHLIESSEN</string>
+    <string name="sos_sending">Alarm wird gesendet…</string>
+    <string name="sos_sent_summary">Alarm gesendet: %1$d per SMS, %2$d per Telegram.</string>
+    <string name="cg_title">NOTFALL: %1$s BRAUCHT HILFE</string>
+    <string name="cg_call_back">ZURÜCKRUFEN</string>
+    <string name="cg_open_map">KARTE ÖFFNEN</string>
+    <string name="cg_stop">ALARM STOPPEN</string>
+    <string name="sos_contact_tip">Tipp für Ihre SOS-Kontakte: Auf dem iPhone für diese Nummer "Notfall-Umgehung" einschalten; auf Android als Favorit markieren und Favoriten sowie wiederholte Anrufe in "Bitte nicht stören" erlauben. Mit dieser App auf ihrem Telefon ertönt ein SOS als lauter Alarm.</string>
+</resources>

@@ -47,6 +47,10 @@ fun AppNavigation(
         }
     }
 
+    val goHome: () -> Unit = {
+        if (!navController.popBackStack("home", inclusive = false)) navController.navigate("home")
+    }
+    androidx.compose.runtime.CompositionLocalProvider(com.seniorenlauncher.ui.components.LocalGoHome provides goHome) {
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
             HomeScreen(
@@ -106,5 +110,6 @@ fun AppNavigation(
         composable("incoming_call") { 
             IncomingCallScreen(onEnd = { navController.popBackStack() }) 
         }
+    }
     }
 }

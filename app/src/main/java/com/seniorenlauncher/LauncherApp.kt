@@ -98,7 +98,14 @@ class LauncherApp : Application() {
             calendarChannel,
             NotificationChannel(CH_RADIO, i18n(R.string.radio_speler), NotificationManager.IMPORTANCE_LOW),
             NotificationChannel(CH_BATTERY, i18n(R.string.batterij), NotificationManager.IMPORTANCE_DEFAULT),
-            NotificationChannel(CH_GENERAL, i18n(R.string.algemeen), NotificationManager.IMPORTANCE_DEFAULT)
+            NotificationChannel(CH_GENERAL, i18n(R.string.algemeen), NotificationManager.IMPORTANCE_DEFAULT),
+            NotificationChannel(CH_UPDATE, i18n(R.string.upd_channel), NotificationManager.IMPORTANCE_DEFAULT),
+            // Telegram calls: the call manager plays the ringtone itself, so the channel is silent.
+            NotificationChannel(CH_TG_CALL, i18n(R.string.tgc_channel), NotificationManager.IMPORTANCE_HIGH).apply {
+                setSound(null, null)
+                enableVibration(false)
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
         ))
     }
 
@@ -112,5 +119,7 @@ class LauncherApp : Application() {
         const val CH_RADIO = "radio_channel"
         const val CH_BATTERY = "battery_channel"
         const val CH_GENERAL = "general_channel"
+        const val CH_TG_CALL = "tg_call_v1"
+        const val CH_UPDATE = "app_update_v1"
     }
 }

@@ -48,6 +48,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
@@ -170,6 +176,21 @@
                 <action android:name="android.telecom.InCallService" />
             </intent-filter>
         </service>
+
+        <!-- Telegram calls (TDLib + NTgCalls) -->
+        <activity
+            android:name=".ui.telegram.TelegramCallActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.seniorenlauncher.tgcall"
+            android:excludeFromRecents="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:theme="@style/Theme.SeniorenLauncher" />
+        <service android:name=".service.TgCallService"
+            android:foregroundServiceType="phoneCall|microphone|camera"
+            android:exported="false" />
+        <receiver android:name=".service.TgCallActionReceiver" android:exported="false" />
 
         <service android:name=".service.SOSService"
             android:foregroundServiceType="location|specialUse"

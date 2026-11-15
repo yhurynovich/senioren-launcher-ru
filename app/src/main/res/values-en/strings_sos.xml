@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sos_not_coming_title">HELP IS NOT COMING</string>
+    <string name="sos_not_coming_notif">The SOS alarm was not sent. Nobody has been warned.</string>
+    <string name="sos_reason_no_contacts">No SOS contacts are set up.</string>
+    <string name="sos_reason_no_network">There is no SIM card and Telegram could not be reached.</string>
+    <string name="sos_reason_send_failed">The SMS and Telegram messages could not be sent.</string>
+    <string name="sos_call_emergency">CALL %1$s</string>
+    <string name="sos_emergency_hint">Emergency number %1$s works even without a SIM card.</string>
+    <string name="sos_try_again">TRY AGAIN</string>
+    <string name="sos_close">CLOSE</string>
+    <string name="sos_sending">Sending alarm…</string>
+    <string name="sos_sent_summary">Alarm sent: %1$d by SMS, %2$d by Telegram.</string>
+    <string name="cg_title">EMERGENCY: %1$s NEEDS HELP</string>
+    <string name="cg_call_back">CALL BACK</string>
+    <string name="cg_open_map">OPEN MAP</string>
+    <string name="cg_stop">STOP ALARM</string>
+    <string name="sos_contact_tip">Tip for your SOS contacts: on iPhone, turn on "Emergency Bypass" for this number; on Android, star it and allow starred contacts and repeat callers in Do Not Disturb. With this app on their phone, an SOS sounds as a loud alarm.</string>
+</resources>

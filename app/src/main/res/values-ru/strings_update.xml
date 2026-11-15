@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="upd_channel">Обновления приложения</string>
+    <string name="upd_title">Доступна новая версия %1$s</string>
+    <string name="upd_text">Нажмите, чтобы установить.</string>
+</resources>

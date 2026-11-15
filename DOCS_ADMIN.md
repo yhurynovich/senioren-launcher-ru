@@ -36,6 +36,7 @@ To manage the phone remotely, your number must be recognised as an authorised SO
 - **Changing the order of the tiles:** long-press a tile, then use **"◀ Earlier"** or **"Later ▶"** as often as you like and tap **DONE**. The dialog shows the position, for example "Calls: place 2 of 8".
 - **Replacing or removing an app:** in the same dialog, tap **"Replace or remove"** (not available for Settings, Wi-Fi and Bluetooth).
 - **Language:** *Settings* → Language. The app restarts and shows the new language.
+- **Big clock:** tap the time at the top of the home screen to see the time and date in very large type. Tap anywhere to close it.
 
 ### 🔑 Settings PIN
 - **Default PIN: `1234`.** You can choose a different PIN in the setup wizard (caregiver steps). Until then, `1234` works.
@@ -43,9 +44,49 @@ To manage the phone remotely, your number must be recognised as an authorised SO
 - **Changing it remotely:** send an SMS `#PIN 5678` from an SOS contact (see [COMMANDS.md](COMMANDS.md)).
 - **Forgotten PIN:** send `#PIN` with a new code from an SOS contact, or reinstall the app (this clears all settings).
 
-### 📞 Calls via Telegram
-- *Settings* → **Calls**: **"Prefer Telegram for international calls"** (on by default) and **"Prefer Telegram for all calls"**.
-- Telegram is only used when the contact is in the phone's contacts, uses Telegram, and the official Telegram app is installed and syncing contacts. Otherwise a normal call is made. 112 and other short numbers always go over the phone network.
+### 💬 Telegram (messages and calls)
+The launcher has Telegram built in, so the senior doesn't need to learn the Telegram app. Telegram chats appear in **Messages** next to the SMS conversations, and Telegram calls use the launcher's own large call screen.
+
+**Connecting (once):**
+1. Open **Messages** → **"Connect Telegram"**.
+2. Check the phone number and tap **"Send code"**. The code arrives by SMS and is **filled in automatically**. If Telegram sends the code to another device where the senior is already signed in, type it in.
+3. If the account has a Telegram password (two-step verification), enter it.
+- **Easier with a helper:** tap **"Let a helper scan a code"**. On your own phone, open Telegram → *Settings* → *Devices* → **Link Desktop Device** and scan the code on the senior's phone.
+- The phone number must already have a Telegram account. If not, create one in the Telegram app first.
+- If the button is missing, this build of the app was made without Telegram (see [TELEGRAM.md](TELEGRAM.md)).
+
+**Calling:**
+- Open a Telegram chat and tap the big green **"Call"** button at the top, or the blue **camera** button next to it for a **video call**. The first time, Android asks for the microphone (and camera): allow it, or the other person can't hear or see the senior.
+- During a call: **Speaker**, **Microphone** (mute), **Turn on camera** and **Hang up**. The screen turns off when the phone is held to the ear.
+- **Video calls:** the other person fills the screen; the senior's own picture is small in a corner and can be dragged anywhere. Buttons: **Camera on/off**, **Switch camera** (front/back), **Speaker**, **Microphone**, **Hang up**. The button panel folds away with the handle above it (or by tapping the video); **Hang up** always stays visible. Video calls start on the speaker.
+- **Incoming Telegram calls** ring with the normal ringtone and open a full-screen **Answer / Decline** screen, also on the lock screen.
+- Telegram encrypts calls end-to-end.
+
+**Automatic Telegram for normal calls:** *Settings* → **Calls**: **"Prefer Telegram for international calls"** (on by default) and **"Prefer Telegram for all calls"**. When the senior calls a number from the Phone screen, it goes over Telegram (in the launcher) if that contact has Telegram; if not, the official Telegram app is tried, and otherwise a normal call is made. Emergency and other short numbers always go over the phone network.
+
+**No SIM card:** calls from the Phone screen automatically go over Telegram. If the contact is not on Telegram, a message says the call can't be made. Emergency numbers (112/911) still work without a SIM.
+
+**Not yet supported:** photos, voice messages and files show as "[Photo or file]"; group chats are not shown yet.
+
+**Disconnecting:** Messages → Telegram → **"Disconnect Telegram"**. This signs out and deletes the Telegram data stored on the phone.
+
+### 🆘 SOS: making sure help comes
+When the senior presses SOS (or a fall is detected):
+1. **Messages:** every SOS contact gets an SMS with the location. Contacts the SMS can't reach (no SIM card, or the SMS failed) get the same message over **Telegram**. The screen shows "Alarm sent: X by SMS, Y by Telegram".
+2. **Calls:** the phone calls the SOS contacts one after another, on the speaker, until someone talks with the senior for about 25 seconds (at most 3 rounds). Without a SIM card these are Telegram calls. Tapping **"I'm safe"** stops it.
+3. **Silent mode is ignored:** during an emergency the phone switches off silent mode and Do Not Disturb and sets ring, call and alarm volume to maximum, so the call-back is heard. The old settings come back after **"I'm safe"** or after 30 minutes. This also happens when the senior dials an emergency number.
+4. **If nothing got through** (no SIM, no internet, no SOS contacts…), a red screen says **"HELP IS NOT COMING"** with the reason and a big button to call **112/911**, which works even without a SIM card.
+
+**For the SOS contacts (caregivers): make sure the senior gets through when your phone is on silent.**
+- **iPhone:** Contacts → the senior → Edit → Ringtone → turn on **Emergency Bypass** (do the same for Text Tone).
+- **Android:** star the senior's contact, then in Do Not Disturb allow calls and messages from **starred contacts** and turn on **repeat callers**. The SOS calls you again within minutes, so "repeat callers" lets it ring through.
+- **Caregiver alarm:** install Senioren Launcher on your own phone too (you don't have to use it as your home screen; just open it once and allow SMS). Every SOS message starts with 🆘; when one arrives, your phone sounds a **loud alarm**, even on silent, with **Call back**, **Open map** and **Stop alarm**.
+
+**Permissions for all of this** (the setup wizard asks for most): Do Not Disturb access (*Settings → Apps → Special app access → Do Not Disturb access → Senioren Launcher*), notification access, and on **Xiaomi/Redmi/POCO** phones **Autostart** for the launcher (*Settings → Apps → Manage apps → Senioren Launcher → Autostart*). Without Autostart, MIUI blocks the notification service: then "Clear all" and hiding the Telegram app's call banner don't work.
+
+### 🔔 Notifications and the back button
+- **"Clear all"** in the notifications screen also marks chats in Telegram, WhatsApp and similar apps as read, so they don't come back immediately.
+- The **back arrow** at the top of every screen goes straight to the home screen.
 
 ### 🔄 Handing the phone to a new owner
 - *Settings* → System → **"Restart setup after reboot"**. After the next reboot the setup wizard starts again (once). The saved own phone number is cleared; contacts, medication and alarms stay. Disconnect Telegram yourself in Messages if needed.
@@ -55,7 +96,7 @@ To manage the phone remotely, your number must be recognised as an authorised SO
 ## 📱 3. Privacy & Safety (Android 16 Ready)
 The app uses **Privacy by Design**. This means:
 *   **Privacy Labels:** on screens where sensitive data is used (such as Location or Contacts), the senior now sees a blue privacy icon with an explicit explanation of why the data is needed.
-*   **Secure Updates:** app updates run over HTTPS and require an explicit check of installation rights, in line with the latest Android security requirements.
+*   **Secure Updates:** the launcher checks for a new version once a day. When there is one, a notification **"New version … available"** appears with a short "what's new". Nothing is downloaded until it is tapped; then the update downloads over HTTPS and Android asks to install it.
 *   **Scam Protection:** the launcher automatically blocks known spam numbers and warns about suspicious SMS messages.
 
 ---

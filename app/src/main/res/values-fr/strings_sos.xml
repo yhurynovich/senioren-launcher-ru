@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sos_not_coming_title">LES SECOURS NE VIENNENT PAS</string>
+    <string name="sos_not_coming_notif">L\'alerte SOS n\'a pas été envoyée. Personne n\'a été prévenu.</string>
+    <string name="sos_reason_no_contacts">Aucun contact SOS n\'est configuré.</string>
+    <string name="sos_reason_no_network">Pas de carte SIM et Telegram est injoignable.</string>
+    <string name="sos_reason_send_failed">Les SMS et les messages Telegram n\'ont pas pu être envoyés.</string>
+    <string name="sos_call_emergency">APPELER LE %1$s</string>
+    <string name="sos_emergency_hint">Le numéro d\'urgence %1$s fonctionne même sans carte SIM.</string>
+    <string name="sos_try_again">RÉESSAYER</string>
+    <string name="sos_close">FERMER</string>
+    <string name="sos_sending">Envoi de l\'alerte…</string>
+    <string name="sos_sent_summary">Alerte envoyée : %1$d par SMS, %2$d par Telegram.</string>
+    <string name="cg_title">URGENCE : %1$s A BESOIN D\'AIDE</string>
+    <string name="cg_call_back">RAPPELER</string>
+    <string name="cg_open_map">OUVRIR LA CARTE</string>
+    <string name="cg_stop">ARRÊTER L\'ALARME</string>
+    <string name="sos_contact_tip">Conseil pour vos contacts SOS : sur iPhone, activez « Contournement en cas d\'urgence » pour ce numéro ; sur Android, ajoutez-le aux favoris et autorisez les favoris et les appels répétés dans Ne pas déranger. Avec cette appli sur leur téléphone, un SOS sonne comme une alarme forte.</string>
+</resources>

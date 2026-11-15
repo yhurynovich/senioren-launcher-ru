@@ -315,7 +315,7 @@ fun SOSScreen(onBack: () -> Unit) {
                         i18n(R.string.contactpersonen), 
                         fontWeight = FontWeight.Black, 
                         fontSize = 18.sp, 
-                        color = Color(0xFF6366F1), // Indigo accent
+                        color = Color(0xFF60A5FA), // Blue accent
                         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
                     )
                     
@@ -329,7 +329,7 @@ fun SOSScreen(onBack: () -> Unit) {
                             ) {
                                 Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
                                     Box(
-                                        Modifier.size(48.dp).background(Color(0xFF6366F1).copy(alpha = 0.2f), CircleShape),
+                                        Modifier.size(48.dp).background(Color(0xFF60A5FA).copy(alpha = 0.2f), CircleShape),
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text("👤", fontSize = 24.sp)
@@ -400,8 +400,10 @@ fun SOSActiveUI(onBack: () -> Unit) {
         
         Spacer(Modifier.height(40.dp))
         
+        val sos by SOSService.status.collectAsState()
+        val sending = sos is com.seniorenlauncher.service.SosStatus.Sending || sos is com.seniorenlauncher.service.SosStatus.Idle
         Text(
-            i18n(R.string.noodsignaal_nverstuurd), 
+            if (sending) i18n(R.string.sos_sending) else i18n(R.string.noodsignaal_nverstuurd), 
             fontSize = 32.sp, 
             fontWeight = FontWeight.Black, 
             color = Color(0xFFEF4444), 
@@ -411,8 +413,10 @@ fun SOSActiveUI(onBack: () -> Unit) {
         
         Spacer(Modifier.height(24.dp))
         
+        val sent = sos as? com.seniorenlauncher.service.SosStatus.Sent
         Text(
-            i18n(R.string.blijf_rustig_uw_locatie_is), 
+            if (sent != null) i18n(R.string.blijf_rustig_uw_locatie_is) + "\n" + i18n(R.string.sos_sent_summary, sent.sms, sent.telegram)
+            else if (sending) "" else i18n(R.string.blijf_rustig_uw_locatie_is),
             fontSize = 20.sp, 
             fontWeight = FontWeight.Medium,
             color = Color.White.copy(alpha = 0.7f),
@@ -422,8 +426,14 @@ fun SOSActiveUI(onBack: () -> Unit) {
         
         Spacer(Modifier.height(60.dp))
         
+        val safeContext = LocalContext.current
         Surface(
-            onClick = onBack,
+            onClick = {
+                com.seniorenlauncher.util.EmergencyAudio.restore(safeContext)
+                SOSService.stopCalling()
+                SOSService.clearStatus()
+                onBack()
+            },
             modifier = Modifier.fillMaxWidth().height(90.dp),
             shape = RoundedCornerShape(40.dp),
             color = Color(0xFF10B981), // Emerald for safety

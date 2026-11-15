@@ -137,7 +137,7 @@ fun WeatherScreen(onBack: () -> Unit, viewModel: WeatherViewModel = viewModel())
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(Icons.Default.LocationOn, null, tint = Color(0xFF6366F1), modifier = Modifier.size(28.dp))
+                    Icon(Icons.Default.LocationOn, null, tint = Color(0xFF60A5FA), modifier = Modifier.size(28.dp))
                     Spacer(Modifier.width(12.dp))
                     Text(i18n(R.string.andere_stad_kiezen), fontSize = 18.sp, fontWeight = FontWeight.Black, color = Color.White)
                 }
@@ -160,7 +160,7 @@ fun WeatherScreen(onBack: () -> Unit, viewModel: WeatherViewModel = viewModel())
                         border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
                     ) {
                         Column(Modifier.padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(i18n(R.string.kledingadvies), fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color(0xFF6366F1), letterSpacing = 2.sp)
+                            Text(i18n(R.string.kledingadvies), fontSize = 14.sp, fontWeight = FontWeight.Black, color = Color(0xFF60A5FA), letterSpacing = 2.sp)
                             Spacer(Modifier.height(12.dp))
                             Text(data.clothingIcons, fontSize = 80.sp)
                         }
@@ -190,7 +190,7 @@ fun WeatherScreen(onBack: () -> Unit, viewModel: WeatherViewModel = viewModel())
                                 }
                             ),
                         shape = RoundedCornerShape(40.dp),
-                        color = Color(0xFF6366F1), // Modern Indigo
+                        color = Color(0xFF2563EB), // Blue
                         shadowElevation = 8.dp
                     ) {
                         Row(

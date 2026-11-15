@@ -44,6 +44,7 @@ import com.seniorenlauncher.data.model.Conversation
 import com.seniorenlauncher.data.model.SmsMessage
 import com.seniorenlauncher.data.telegram.TelegramClient
 import com.seniorenlauncher.data.telegram.TgAuth
+import com.seniorenlauncher.data.telegram.TgCallManager
 import com.seniorenlauncher.ui.components.ScreenHeader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -124,7 +125,31 @@ fun MessagesScreen(
                         onBack = backHandler
                     )
                 }
-                
+
+                // Telegram private chat (chat id == user id, > 0): big call button
+                val tgUserId = selectedAddress?.let { TelegramClient.chatIdOf(it) }?.takeIf { it > 0 }
+                if (activeView == MessageView.Chat && tgUserId != null) {
+                    Button(
+                        onClick = { TgCallManager.start(context, tgUserId, selectedName ?: TelegramClient.displayName(tgUserId)) },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF38A169), contentColor = Color.White),
+                        shape = RoundedCornerShape(40.dp),
+                        modifier = Modifier.padding(bottom = 16.dp, end = 8.dp).heightIn(min = 56.dp)
+                    ) {
+                        Icon(Icons.Default.Call, null, modifier = Modifier.size(28.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(i18n(R.string.tgc_call), fontSize = 18.sp, fontWeight = FontWeight.Black)
+                    }
+                    Button(
+                        onClick = { TgCallManager.start(context, tgUserId, selectedName ?: TelegramClient.displayName(tgUserId), video = true) },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB), contentColor = Color.White),
+                        shape = RoundedCornerShape(40.dp),
+                        contentPadding = PaddingValues(horizontal = 14.dp),
+                        modifier = Modifier.padding(bottom = 16.dp, end = 8.dp).heightIn(min = 56.dp)
+                    ) {
+                        Icon(Icons.Default.Videocam, i18n(R.string.tgc_video), modifier = Modifier.size(30.dp))
+                    }
+                }
+
                 Surface(
                     color = Color(0xFF1E293B),
                     shape = RoundedCornerShape(40.dp),
@@ -207,7 +232,7 @@ fun ConversationOverview(messagesVm: MessagesViewModel, onConversationClick: (Co
                 .padding(vertical = 12.dp)
                 .height(80.dp)
                 .scale(scale),
-            color = Color(0xFF6366F1),
+            color = Color(0xFF2563EB),
             shape = RoundedCornerShape(40.dp),
             border = BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
             shadowElevation = 8.dp
@@ -268,7 +293,7 @@ fun ConversationItem(conv: Conversation, onClick: (Conversation) -> Unit, zoom: 
             Box(
                 Modifier
                     .size((64 * zoom).dp)
-                    .background(Brush.linearGradient(listOf(Color(0xFF6366F1), Color(0xFF818CF8))), CircleShape),
+                    .background(Color(0xFF2563EB), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
                 Text((conv.contactName ?: conv.address).take(1).uppercase(), fontSize = (28 * zoom).sp, fontWeight = FontWeight.Black, color = Color.White)
@@ -373,7 +398,7 @@ fun ChatScreen(address: String, messagesVm: MessagesViewModel, zoom: Float) {
 @Composable
 fun MessageBubble(message: SmsMessage, zoom: Float) {
     val isSent = message.isSent
-    val bubbleColor = if (isSent) Color(0xFF6366F1) else Color(0xFF1E293B)
+    val bubbleColor = if (isSent) Color(0xFF2563EB) else Color(0xFF1E293B)
     val textColor = Color.White
     val borderColor = if (isSent) Color.White.copy(alpha = 0.2f) else Color.White.copy(alpha = 0.1f)
 

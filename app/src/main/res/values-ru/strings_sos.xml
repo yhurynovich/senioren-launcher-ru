@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sos_not_coming_title">ПОМОЩЬ НЕ ПРИДЁТ</string>
+    <string name="sos_not_coming_notif">Сигнал SOS не отправлен. Никто не предупреждён.</string>
+    <string name="sos_reason_no_contacts">Не настроены контакты SOS.</string>
+    <string name="sos_reason_no_network">Нет SIM-карты, и Telegram недоступен.</string>
+    <string name="sos_reason_send_failed">Не удалось отправить SMS и сообщения Telegram.</string>
+    <string name="sos_call_emergency">ПОЗВОНИТЬ %1$s</string>
+    <string name="sos_emergency_hint">Экстренный номер %1$s работает даже без SIM-карты.</string>
+    <string name="sos_try_again">ЕЩЁ РАЗ</string>
+    <string name="sos_close">ЗАКРЫТЬ</string>
+    <string name="sos_sending">Отправка сигнала…</string>
+    <string name="sos_sent_summary">Сигнал отправлен: SMS — %1$d, Telegram — %2$d.</string>
+    <string name="cg_title">ЭКСТРЕННО: %1$s НУЖНА ПОМОЩЬ</string>
+    <string name="cg_call_back">ПЕРЕЗВОНИТЬ</string>
+    <string name="cg_open_map">ОТКРЫТЬ КАРТУ</string>
+    <string name="cg_stop">ВЫКЛЮЧИТЬ СИГНАЛ</string>
+    <string name="sos_contact_tip">Совет для контактов SOS: на iPhone включите для этого номера «Обход в экстренных ситуациях»; на Android добавьте его в избранное и разрешите избранные контакты и повторные вызовы в режиме «Не беспокоить». Если на их телефоне установлено это приложение, SOS прозвучит как громкий сигнал.</string>
+</resources>

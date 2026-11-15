@@ -111,7 +111,7 @@ fun HomeTopBar(notificationCount: Int, onNotificationsClick: () -> Unit) {
                     Icons.Default.Notifications,
                     contentDescription = i18n(R.string.meldingen_2),
                     modifier = Modifier.size(32.dp),
-                    tint = if (notificationCount > 0) Color(0xFF6366F1) else Color.White.copy(alpha = 0.4f)
+                    tint = if (notificationCount > 0) Color(0xFF60A5FA) else Color.White.copy(alpha = 0.4f)
                 )
                 if (notificationCount > 0) {
                     Surface(
@@ -137,6 +137,14 @@ fun HomeTopBar(notificationCount: Int, onNotificationsClick: () -> Unit) {
         }
     }
 
+    // Tapping the clock or date shows them in very large type (read-only; any tap closes it).
+    var showBigClock by remember { mutableStateOf(false) }
+    if (showBigClock) BigClockDialog(onDismiss = { showBigClock = false })
+    val openBigClock = Modifier.clickable(
+        interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+        indication = null
+    ) { showBigClock = true }
+
     val clock: @Composable () -> Unit = {
         Text(
             currentTime,
@@ -146,7 +154,8 @@ fun HomeTopBar(notificationCount: Int, onNotificationsClick: () -> Unit) {
             lineHeight = 46.sp,
             fontWeight = FontWeight.W900,
             color = Color.White,
-            letterSpacing = (-2).sp
+            letterSpacing = (-2).sp,
+            modifier = openBigClock
         )
     }
 
@@ -158,8 +167,9 @@ fun HomeTopBar(notificationCount: Int, onNotificationsClick: () -> Unit) {
             fontSize = 12.sp,
             lineHeight = 14.sp,
             fontWeight = FontWeight.Black,
-            color = Color(0xFF6366F1), // Modern Indigo
-            letterSpacing = 1.sp
+            color = Color(0xFF60A5FA), // Blue
+            letterSpacing = 1.sp,
+            modifier = openBigClock
         )
     }
 
@@ -191,7 +201,7 @@ fun HomeTopBar(notificationCount: Int, onNotificationsClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 statusCapsule()
-                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(Modifier.weight(1f).then(openBigClock), horizontalAlignment = Alignment.CenterHorizontally) {
                     clock()
                     date()
                 }
@@ -209,6 +219,61 @@ fun HomeTopBar(notificationCount: Int, onNotificationsClick: () -> Unit) {
                     bell()
                 }
                 clock()
+            }
+        }
+    }
+}
+
+/**
+ * Full-screen, read-only view of the time and date in very large type. Any tap closes it.
+ * Font sizes follow the screen width so the time always fits on one line, also at the largest text size.
+ */
+@Composable
+fun BigClockDialog(onDismiss: () -> Unit) {
+    var now by remember { mutableStateOf(Date()) }
+    LaunchedEffect(Unit) {
+        while (true) { now = Date(); kotlinx.coroutines.delay(1_000) }
+    }
+    val locale = Locale.getDefault()
+    androidx.compose.ui.window.Dialog(
+        onDismissRequest = onDismiss,
+        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        BoxWithConstraints(
+            Modifier
+                .fillMaxSize()
+                .background(Color(0xFF0F172A))
+                .clickable(
+                    interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                    indication = null,
+                    onClick = onDismiss
+                )
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            val density = androidx.compose.ui.platform.LocalDensity.current
+            // "HH:mm" in heavy digits is about 3 em wide.
+            val timeSize = with(density) { (maxWidth / 3.1f).toSp() }
+            val daySize = with(density) { (maxWidth / 9f).toSp() }
+            val dateSize = with(density) { (maxWidth / 12f).toSp() }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    SimpleDateFormat("HH:mm", locale).format(now),
+                    fontSize = timeSize, lineHeight = timeSize, maxLines = 1, softWrap = false,
+                    fontWeight = FontWeight.W900, color = Color.White, letterSpacing = (-2).sp
+                )
+                Spacer(Modifier.height(24.dp))
+                Text(
+                    SimpleDateFormat("EEEE", locale).format(now).replaceFirstChar { it.titlecase(locale) },
+                    fontSize = daySize, lineHeight = daySize * 1.15f, fontWeight = FontWeight.Black,
+                    color = Color(0xFF60A5FA), textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    SimpleDateFormat("d MMMM yyyy", locale).format(now),
+                    fontSize = dateSize, lineHeight = dateSize * 1.15f, fontWeight = FontWeight.Bold,
+                    color = Color.White, textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
             }
         }
     }

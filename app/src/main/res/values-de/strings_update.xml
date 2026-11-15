@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="upd_channel">App-Updates</string>
+    <string name="upd_title">Neue Version %1$s verfügbar</string>
+    <string name="upd_text">Zum Installieren tippen.</string>
+</resources>

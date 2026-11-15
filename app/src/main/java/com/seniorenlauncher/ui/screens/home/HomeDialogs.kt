@@ -716,7 +716,7 @@ fun BluetoothDialog(
                     if (isBluetoothEnabled) Icons.Default.Bluetooth else Icons.Default.BluetoothDisabled,
                     contentDescription = null,
                     modifier = Modifier.size(100.dp),
-                    tint = if (isBluetoothEnabled) Color(0xFF6366F1) else Color(0xFF94A3B8)
+                    tint = if (isBluetoothEnabled) Color(0xFF60A5FA) else Color(0xFF94A3B8)
                 )
                 
                 Spacer(Modifier.height(24.dp))

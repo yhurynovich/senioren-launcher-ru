@@ -20,6 +20,7 @@ import io.github.up9cloud.td.JsonClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
@@ -134,6 +135,21 @@ object TelegramClient {
 
     private fun obj(type: String) = JSONObject().put("@type", type)
 
+    /** Raw TDLib request for other Telegram features (calls). */
+    internal fun request(req: JSONObject, cb: ((JSONObject) -> Unit)? = null) {
+        if (!started) { cb?.invoke(obj("error").put("message", "not started")); return }
+        send(req, cb)
+    }
+
+    internal fun appContextOrNull(): Context? = appContext
+
+    /** Name of a Telegram user we already have a private chat with (private chat id == user id), or "". */
+    fun displayName(userId: Long): String = chats[userId]?.title.orEmpty()
+
+    /** "First Last" from a TDLib user object. */
+    fun nameOf(user: JSONObject): String =
+        listOf(user.optString("first_name"), user.optString("last_name")).filter { it.isNotBlank() }.joinToString(" ")
+
     private fun errorHandler(onOk: (() -> Unit)? = null): (JSONObject) -> Unit = { r ->
         if (r.optString("@type") == "error") {
             _lastError.value = r.optString("message")
@@ -213,6 +229,42 @@ object TelegramClient {
         send(obj("viewMessages").put("chat_id", chatId).put("message_ids", JSONArray(ids)).put("force_read", true))
     }
 
+    /** Temporary message id -> callback, for sends that need to know whether they reached Telegram. */
+    private val pendingSends = ConcurrentHashMap<Long, (Boolean) -> Unit>()
+
+    /**
+     * Sends a text and suspends until Telegram confirms it (updateMessageSendSucceeded) or it fails.
+     * Returns false on failure, timeout, or when Telegram isn't signed in.
+     */
+    suspend fun sendTextConfirmed(chatId: Long, text: String, timeoutMs: Long = 20_000): Boolean {
+        if (_auth.value !is TgAuth.Ready) return false
+        val result = kotlinx.coroutines.CompletableDeferred<Boolean>()
+        send(obj("sendMessage").put("chat_id", chatId).put(
+            "input_message_content", obj("inputMessageText").put("text", obj("formattedText").put("text", text))
+        )) { r ->
+            if (r.optString("@type") != "message") { result.complete(false); return@send }
+            val tempId = r.optLong("id")
+            // Already sent (rare): no sending_state means it is on the server.
+            if (r.optJSONObject("sending_state") == null) { result.complete(true); return@send }
+            pendingSends[tempId] = { ok -> result.complete(ok) }
+        }
+        return kotlinx.coroutines.withTimeoutOrNull(timeoutMs) { result.await() } ?: false
+    }
+
+    /** findChatByPhone as a suspend function. */
+    suspend fun chatForPhone(phone: String): Long? = kotlinx.coroutines.suspendCancellableCoroutine { cont ->
+        findChatByPhone(phone) { id -> if (cont.isActive) cont.resumeWith(Result.success(id)) }
+    }
+
+    /** Waits until Telegram is signed in and connected (starting the client if a session exists). */
+    suspend fun awaitReady(ctx: Context, timeoutMs: Long = 15_000): Boolean {
+        if (!isConfigured || !hasSession(ctx)) return false
+        start(ctx)
+        return kotlinx.coroutines.withTimeoutOrNull(timeoutMs) {
+            auth.first { it is TgAuth.Ready || it is TgAuth.Failed || it is TgAuth.WaitPhone }
+        } is TgAuth.Ready
+    }
+
     fun sendText(chatId: Long, text: String) {
         send(obj("sendMessage").put("chat_id", chatId).put(
             "input_message_content", obj("inputMessageText").put("text", obj("formattedText").put("text", text))
@@ -254,9 +306,12 @@ object TelegramClient {
                 publishChats()
             }
             "updateNewMessage" -> onNewMessage(o.getJSONObject("message"))
+            "updateCall", "updateNewCallSignalingData" -> TgCallManager.onUpdate(o)
+            "updateMessageSendFailed" -> pendingSends.remove(o.optLong("old_message_id"))?.invoke(false)
             "updateMessageSendSucceeded" -> {
                 val m = o.getJSONObject("message")
                 val old = o.optLong("old_message_id")
+                pendingSends.remove(old)?.invoke(true)
                 if (m.optLong("chat_id") == openChatId) {
                     val sms = toSms(m)
                     _messages.value = _messages.value.filter { it.id != old && it.id != m.optLong("id") }.let { l ->

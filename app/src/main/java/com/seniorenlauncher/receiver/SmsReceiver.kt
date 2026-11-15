@@ -56,6 +56,19 @@ import java.util.concurrent.TimeUnit
 class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        // Caregiver side: a senior's SOS (marked with 🆘) sounds a loud alarm, even on silent.
+        // Handled for SMS_RECEIVED only, which every app gets, so it fires once.
+        if (intent.action == Telephony.Sms.Intents.SMS_RECEIVED_ACTION) {
+            try {
+                val msgs = Telephony.Sms.Intents.getMessagesFromIntent(intent)
+                val body = msgs.joinToString("") { it.displayMessageBody ?: "" }
+                val from = msgs.firstOrNull()?.displayOriginatingAddress
+                if (from != null && com.seniorenlauncher.util.CaregiverAlarm.isSosMessage(body)) {
+                    com.seniorenlauncher.util.CaregiverAlarm.trigger(context, from, body)
+                }
+            } catch (e: Exception) { android.util.Log.w("SmsReceiver", "SOS check", e) }
+            return
+        }
         if (intent.action != Telephony.Sms.Intents.SMS_DELIVER_ACTION) return
 
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)

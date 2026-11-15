@@ -231,6 +231,11 @@ fun HomeScreenContent(
             val fitRows = ((availH + gap) / (minTile + gap)).toInt().coerceAtLeast(1)
             val rows = minOf(layoutRows, fitRows)
             val tileH = ((availH - gap * (rows - 1)) / rows).coerceIn(64.dp, origH)
+            // Tiles are capped at origH, so on tall screens there is space left over: split it
+            // above and below. Based on the full grid, so every page (also a part-filled last
+            // page) keeps its tiles in the same place.
+            val gridH = tileH * rows + gap * (rows - 1)
+            val centerPad = ((availH - gridH) / 2).coerceAtLeast(0.dp)
             val appsPerPage = rows * cols
             val pageCount = max(1, ceil(totalItemsCount.toDouble() / appsPerPage.toDouble()).toInt())
             val pagerState = rememberPagerState(pageCount = { pageCount })
@@ -247,6 +252,7 @@ fun HomeScreenContent(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(cols),
                 modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(top = centerPad),
                 verticalArrangement = Arrangement.spacedBy(gap),
                 horizontalArrangement = Arrangement.spacedBy(gap),
                 userScrollEnabled = false

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="upd_channel">تحديثات التطبيق</string>
+    <string name="upd_title">الإصدار الجديد %1$s متاح</string>
+    <string name="upd_text">اضغط للتثبيت.</string>
+</resources>

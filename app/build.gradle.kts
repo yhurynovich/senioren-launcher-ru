@@ -11,14 +11,14 @@ plugins {
 
 android {
     namespace = "com.seniorenlauncher"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.seniorenlauncher"
         minSdk = 26
         targetSdk = 36
-        versionCode = 17
-        versionName = "1.1.0"
+        versionCode = 18
+        versionName = "1.2.0"
     }
 
     // Telegram API credentials: read from telegram.properties (git-ignored). See TELEGRAM.md.
@@ -127,6 +127,9 @@ dependencies {
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.material)
     implementation(libs.coil.compose)
+
+    // Telegram calls: media engine (WebRTC) for TDLib private calls. LGPL-3.0. See TELEGRAM.md.
+    implementation("io.github.pytgcalls:ntgcalls:3.0.7")
 
     // QR code for Telegram sign-in with a helper
     implementation("com.google.zxing:core:3.5.3")

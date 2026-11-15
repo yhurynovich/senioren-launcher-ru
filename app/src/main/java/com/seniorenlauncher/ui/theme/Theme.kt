@@ -12,18 +12,42 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.sp
 import com.seniorenlauncher.data.model.AppTheme
 
+// Every role is set explicitly: anything left out falls back to Material's pale purple defaults.
+// Solid, saturated colours with strong contrast (no wallpaper-based Material You colours).
 val ClassicColors = darkColorScheme(
-    primary = Color(0xFF6366F1), // Modern Indigo
-    onPrimary = Color.White,
-    secondary = Color(0xFF10B981), // Emerald
-    tertiary = Color(0xFFF59E0B), // Amber
+    primary = Color(0xFF60A5FA), // Blue 400: icons/text on dark, 7:1 on Slate 900
+    onPrimary = Color(0xFF0F172A),
+    primaryContainer = Color(0xFF2563EB), // Blue 600 with white text
+    onPrimaryContainer = Color.White,
+    secondary = Color(0xFF34D399), // Emerald 400
+    onSecondary = Color(0xFF052E16),
+    secondaryContainer = Color(0xFF047857), // Emerald 700
+    onSecondaryContainer = Color.White,
+    tertiary = Color(0xFFFBBF24), // Amber 400
+    onTertiary = Color(0xFF1C1917),
+    tertiaryContainer = Color(0xFFB45309), // Amber 700
+    onTertiaryContainer = Color.White,
     background = Color(0xFF0F172A), // Slate 900
+    onBackground = Color.White,
     surface = Color(0xFF1E293B), // Slate 800
+    onSurface = Color.White,
     surfaceVariant = Color(0xFF334155), // Slate 700
-    onBackground = Color(0xFFF8FAFC),
-    onSurface = Color(0xFFF8FAFC),
-    onSurfaceVariant = Color(0xFFCBD5E1),
-    error = Color(0xFFEF4444)
+    onSurfaceVariant = Color(0xFFE2E8F0), // Slate 200
+    surfaceTint = Color(0xFF60A5FA),
+    surfaceContainerLowest = Color(0xFF0B1220),
+    surfaceContainerLow = Color(0xFF162033),
+    surfaceContainer = Color(0xFF1E293B),
+    surfaceContainerHigh = Color(0xFF263449),
+    surfaceContainerHighest = Color(0xFF334155),
+    inverseSurface = Color(0xFFF8FAFC),
+    inverseOnSurface = Color(0xFF0F172A),
+    inversePrimary = Color(0xFF1D4ED8),
+    outline = Color(0xFF94A3B8),
+    outlineVariant = Color(0xFF475569),
+    error = Color(0xFFF87171), // Red 400
+    onError = Color(0xFF1C1917),
+    errorContainer = Color(0xFFB91C1C), // Red 700
+    onErrorContainer = Color.White
 )
 val HighContrastColors = darkColorScheme(
     primary = Color(0xFF00CCFF), onPrimary = Color.Black, secondary = Color(0xFF00FF00),
@@ -32,23 +56,43 @@ val HighContrastColors = darkColorScheme(
     error = Color.Red
 )
 val LightColors = lightColorScheme(
-    primary = Color(0xFF4F46E5),
+    primary = Color(0xFF1D4ED8), // Blue 700
     onPrimary = Color.White,
-    secondary = Color(0xFF059669),
+    primaryContainer = Color(0xFF2563EB),
+    onPrimaryContainer = Color.White,
+    secondary = Color(0xFF047857),
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFF059669),
+    onSecondaryContainer = Color.White,
+    tertiary = Color(0xFFB45309),
+    onTertiary = Color.White,
+    tertiaryContainer = Color(0xFFD97706),
+    onTertiaryContainer = Color.Black,
     background = Color(0xFFF8FAFC),
-    surface = Color.White,
-    surfaceVariant = Color(0xFFF1F5F9),
     onBackground = Color(0xFF0F172A),
+    surface = Color.White,
     onSurface = Color(0xFF0F172A),
-    onSurfaceVariant = Color(0xFF64748B),
-    error = Color(0xFFDC2626)
+    surfaceVariant = Color(0xFFE2E8F0),
+    onSurfaceVariant = Color(0xFF334155), // Slate 700: readable grey
+    surfaceTint = Color(0xFF1D4ED8),
+    surfaceContainerLowest = Color.White,
+    surfaceContainerLow = Color(0xFFF8FAFC),
+    surfaceContainer = Color(0xFFF1F5F9),
+    surfaceContainerHigh = Color(0xFFE2E8F0),
+    surfaceContainerHighest = Color(0xFFCBD5E1),
+    outline = Color(0xFF475569),
+    outlineVariant = Color(0xFFCBD5E1),
+    error = Color(0xFFB91C1C),
+    onError = Color.White,
+    errorContainer = Color(0xFFDC2626),
+    onErrorContainer = Color.White
 )
 
 @Composable
 fun SeniorenLauncherTheme(
     appTheme: AppTheme = AppTheme.CLASSIC, 
     fontSize: Int = 18,
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // wallpaper colours made the UI pale and low-contrast
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current

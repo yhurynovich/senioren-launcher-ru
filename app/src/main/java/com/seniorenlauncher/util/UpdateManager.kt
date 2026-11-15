@@ -48,7 +48,7 @@ class UpdateManager(private val context: Context) {
             val remoteTag = latestRelease.tagName.removePrefix("v").trim()
             val localVersion = currentVersion.removePrefix("v").trim()
             
-            if (remoteTag != localVersion) {
+            if (isNewer(remoteTag, localVersion)) {
                 Log.d("UpdateManager", "Nieuwe versie beschikbaar: $remoteTag (Huidig: $localVersion)")
                 return@withContext latestRelease
             }
@@ -56,6 +56,19 @@ class UpdateManager(private val context: Context) {
             Log.e("UpdateManager", "Check for updates failed", e)
         }
         null
+    }
+
+    companion object {
+        /** True when [remote] is a higher version than [local] ("1.10.0" > "1.9.2"); a differing tag alone is not enough. */
+        fun isNewer(remote: String, local: String): Boolean {
+            fun parts(v: String) = v.removePrefix("v").split('.', '-').map { p -> p.takeWhile { it.isDigit() }.toIntOrNull() ?: 0 }
+            val r = parts(remote); val l = parts(local)
+            for (i in 0 until maxOf(r.size, l.size)) {
+                val d = r.getOrElse(i) { 0 } - l.getOrElse(i) { 0 }
+                if (d != 0) return d > 0
+            }
+            return false
+        }
     }
 
     fun downloadAndInstall(release: GitHubRelease) {

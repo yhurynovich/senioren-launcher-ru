@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tgc_title">Telegram call</string>
+    <string name="tgc_incoming">Incoming Telegram call</string>
+    <string name="tgc_calling">Calling…</string>
+    <string name="tgc_ringing">Ringing…</string>
+    <string name="tgc_connecting">Connecting…</string>
+    <string name="tgc_ended">Call ended</string>
+    <string name="tgc_declined">Call declined</string>
+    <string name="tgc_busy">Busy</string>
+    <string name="tgc_no_answer">No answer</string>
+    <string name="tgc_failed">Call failed</string>
+    <string name="tgc_mic_on">MICROPHONE ON</string>
+    <string name="tgc_mic_off">MICROPHONE OFF</string>
+    <string name="tgc_ongoing">Telegram call in progress</string>
+    <string name="tgc_channel">Telegram calls</string>
+    <string name="tgc_call">Call</string>
+    <string name="tgc_incoming_video">Incoming Telegram video call</string>
+    <string name="tgc_camera_on">CAMERA ON</string>
+    <string name="tgc_camera_off">CAMERA OFF</string>
+    <string name="tgc_switch_camera">SWITCH CAMERA</string>
+    <string name="tgc_start_video">TURN ON CAMERA</string>
+    <string name="tgc_video">Video</string>
+    <string name="tgc_no_sim_no_tg">No SIM card, and this contact is not on Telegram. The call cannot be made.</string>
+    <string name="tgc_calling_via_tg">Calling via Telegram…</string>
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tgc_title">مكالمة تيليجرام</string>
+    <string name="tgc_incoming">مكالمة تيليجرام واردة</string>
+    <string name="tgc_calling">جارٍ الاتصال…</string>
+    <string name="tgc_ringing">يرن…</string>
+    <string name="tgc_connecting">جارٍ التوصيل…</string>
+    <string name="tgc_ended">انتهت المكالمة</string>
+    <string name="tgc_declined">تم رفض المكالمة</string>
+    <string name="tgc_busy">مشغول</string>
+    <string name="tgc_no_answer">لا يوجد رد</string>
+    <string name="tgc_failed">فشلت المكالمة</string>
+    <string name="tgc_mic_on">الميكروفون يعمل</string>
+    <string name="tgc_mic_off">الميكروفون مكتوم</string>
+    <string name="tgc_ongoing">مكالمة تيليجرام جارية</string>
+    <string name="tgc_channel">مكالمات تيليجرام</string>
+    <string name="tgc_call">اتصال</string>
+    <string name="tgc_incoming_video">مكالمة فيديو واردة عبر تيليجرام</string>
+    <string name="tgc_camera_on">الكاميرا تعمل</string>
+    <string name="tgc_camera_off">الكاميرا متوقفة</string>
+    <string name="tgc_switch_camera">تبديل الكاميرا</string>
+    <string name="tgc_start_video">تشغيل الكاميرا</string>
+    <string name="tgc_video">فيديو</string>
+    <string name="tgc_no_sim_no_tg">لا توجد شريحة SIM، وهذا الشخص لا يستخدم تيليجرام. لا يمكن إجراء المكالمة.</string>
+    <string name="tgc_calling_via_tg">جارٍ الاتصال عبر تيليجرام…</string>
+</resources>

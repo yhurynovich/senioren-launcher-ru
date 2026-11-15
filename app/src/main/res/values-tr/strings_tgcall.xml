@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tgc_title">Telegram araması</string>
+    <string name="tgc_incoming">Gelen Telegram araması</string>
+    <string name="tgc_calling">Aranıyor…</string>
+    <string name="tgc_ringing">Çalıyor…</string>
+    <string name="tgc_connecting">Bağlanıyor…</string>
+    <string name="tgc_ended">Arama sona erdi</string>
+    <string name="tgc_declined">Arama reddedildi</string>
+    <string name="tgc_busy">Meşgul</string>
+    <string name="tgc_no_answer">Yanıt yok</string>
+    <string name="tgc_failed">Arama başarısız</string>
+    <string name="tgc_mic_on">MİKROFON AÇIK</string>
+    <string name="tgc_mic_off">MİKROFON KAPALI</string>
+    <string name="tgc_ongoing">Telegram araması sürüyor</string>
+    <string name="tgc_channel">Telegram aramaları</string>
+    <string name="tgc_call">Ara</string>
+    <string name="tgc_incoming_video">Gelen Telegram görüntülü araması</string>
+    <string name="tgc_camera_on">KAMERA AÇIK</string>
+    <string name="tgc_camera_off">KAMERA KAPALI</string>
+    <string name="tgc_switch_camera">KAMERAYI DEĞİŞTİR</string>
+    <string name="tgc_start_video">KAMERAYI AÇ</string>
+    <string name="tgc_video">Görüntülü</string>
+    <string name="tgc_no_sim_no_tg">SIM kart yok ve bu kişinin Telegram\'ı yok. Arama yapılamıyor.</string>
+    <string name="tgc_calling_via_tg">Telegram ile aranıyor…</string>
+</resources>

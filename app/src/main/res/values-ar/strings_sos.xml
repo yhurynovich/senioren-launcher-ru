@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sos_not_coming_title">المساعدة لن تأتي</string>
+    <string name="sos_not_coming_notif">لم يتم إرسال إنذار الطوارئ. لم يتم تحذير أحد.</string>
+    <string name="sos_reason_no_contacts">لم يتم إعداد جهات اتصال للطوارئ.</string>
+    <string name="sos_reason_no_network">لا توجد شريحة SIM ولا يمكن الوصول إلى تيليجرام.</string>
+    <string name="sos_reason_send_failed">تعذّر إرسال الرسائل النصية ورسائل تيليجرام.</string>
+    <string name="sos_call_emergency">اتصل بـ %1$s</string>
+    <string name="sos_emergency_hint">رقم الطوارئ %1$s يعمل حتى بدون شريحة SIM.</string>
+    <string name="sos_try_again">حاول مرة أخرى</string>
+    <string name="sos_close">إغلاق</string>
+    <string name="sos_sending">جارٍ إرسال الإنذار…</string>
+    <string name="sos_sent_summary">تم إرسال الإنذار: %1$d عبر SMS و%2$d عبر تيليجرام.</string>
+    <string name="cg_title">طوارئ: %1$s يحتاج إلى مساعدة</string>
+    <string name="cg_call_back">معاودة الاتصال</string>
+    <string name="cg_open_map">فتح الخريطة</string>
+    <string name="cg_stop">إيقاف الإنذار</string>
+    <string name="sos_contact_tip">نصيحة لجهات اتصال الطوارئ: على iPhone فعّلوا "تجاوز الطوارئ" لهذا الرقم؛ وعلى Android أضيفوه إلى المفضلة واسمحوا للمفضلة وللمتصلين المتكررين في وضع عدم الإزعاج. إذا كان هذا التطبيق على هاتفهم فسيُسمع نداء الطوارئ كإنذار عالٍ.</string>
+</resources>

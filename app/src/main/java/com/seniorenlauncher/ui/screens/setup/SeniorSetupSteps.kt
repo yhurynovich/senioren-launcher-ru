@@ -206,5 +206,8 @@ fun SeniorEmergencyStep(onNext: () -> Unit) {
         
         Spacer(Modifier.height(24.dp))
         Text(i18n(R.string.de_app_zal_hierna_om), fontSize = 16.sp, textAlign = TextAlign.Center, color = Color.Gray)
+        Spacer(Modifier.height(16.dp))
+        // So an SOS reaches the contact even when their phone is on silent.
+        Text(i18n(R.string.sos_contact_tip), fontSize = 16.sp, textAlign = TextAlign.Center, color = Color.Gray)
     }
 }

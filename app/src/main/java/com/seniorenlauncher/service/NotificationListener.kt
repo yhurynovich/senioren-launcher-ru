@@ -51,21 +51,76 @@ class NotificationListener : NotificationListenerService() {
         private val _notifications = MutableStateFlow<Map<String, Int>>(emptyMap())
         val notifications: StateFlow<Map<String, Int>> = _notifications
 
+        /** Official Telegram clients that ring for the same account as the launcher's built-in Telegram. */
+        private val TELEGRAM_APPS = setOf(
+            "org.telegram.messenger", "org.telegram.messenger.web", "org.telegram.messenger.beta", "org.thunderdog.challegram"
+        )
+
+        /**
+         * While the launcher's own Telegram call screen is up, hide the official Telegram app's
+         * call banner for the same call (both clients ring). Needs notification access.
+         */
+        fun hideTelegramCallBanners() {
+            val l = instance ?: return
+            try { l.activeNotifications?.forEach { l.hideIfTelegramCall(it) } } catch (e: Exception) { Log.w(TAG, "sweep", e) }
+        }
+
+        /**
+         * Clear everything. Messengers (Telegram, WhatsApp…) post a notification again while the chat
+         * is still unread, so first press their "Mark as read" action, then remove the notification.
+         */
         fun dismissAll() {
-            instance?.cancelAllNotifications()
+            val l = instance ?: return
+            try { l.activeNotifications?.forEach { markRead(it) } } catch (e: Exception) { Log.w(TAG, "mark read", e) }
+            l.cancelAllNotifications()
         }
 
         fun dismiss(key: String) {
             try {
-                instance?.cancelNotification(key)
+                val l = instance ?: return
+                l.activeNotifications?.firstOrNull { it.key == key }?.let { markRead(it) }
+                l.cancelNotification(key)
             } catch (e: Exception) {
                 Log.e(TAG, "Error dismissing notification: $key", e)
             }
         }
+
+        /** Words for "read" in the "Mark as read" button, for apps that don't tag the action. */
+        private val READ_WORDS = listOf("read", "прочит", "gelezen", "gelesen", "comme lu", "okundu", "مقروء", "قراءة")
+
+        private fun markRead(sbn: StatusBarNotification) {
+            val actions = sbn.notification.actions ?: return
+            val action = actions.firstOrNull {
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P &&
+                    it.semanticAction == Notification.Action.SEMANTIC_ACTION_MARK_AS_READ
+            } ?: actions.firstOrNull { a ->
+                // Only actions without text input (not "Reply"), whose title says "read".
+                a.remoteInputs.isNullOrEmpty() && a.title?.toString()?.lowercase()?.let { t -> READ_WORDS.any { w -> w in t } } == true
+            } ?: return
+            try {
+                action.actionIntent?.send()
+                Log.i(TAG, "marked as read: ${sbn.packageName}")
+            } catch (e: Exception) {
+                Log.w(TAG, "mark read ${sbn.packageName}", e)
+            }
+        }
+    }
+
+    private fun hideIfTelegramCall(sbn: StatusBarNotification) {
+        if (sbn.packageName !in TELEGRAM_APPS) return
+        val call = com.seniorenlauncher.data.telegram.TgCallManager.current.value ?: return
+        if (call.phase is com.seniorenlauncher.data.telegram.TgCallPhase.Ended) return
+        val n = sbn.notification
+        if (n.category != Notification.CATEGORY_CALL && n.fullScreenIntent == null) return
+        Log.i(TAG, "hiding Telegram app call notification ${sbn.key}")
+        // Cancel works for normal notifications; a foreground-service one can only be snoozed.
+        try { cancelNotification(sbn.key) } catch (e: Exception) { Log.w(TAG, "cancel", e) }
+        try { snoozeNotification(sbn.key, 3 * 60_000L) } catch (e: Exception) { Log.w(TAG, "snooze", e) }
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         Log.d(TAG, "Notification posted from: ${sbn?.packageName}")
+        sbn?.let { hideIfTelegramCall(it) }
         updateState()
     }
 

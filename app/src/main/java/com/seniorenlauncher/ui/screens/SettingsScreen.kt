@@ -151,12 +151,12 @@ fun SettingsScreenContent(
                             modifier = Modifier
                                 .weight(1f)
                                 .background(
-                                    if (selected) Color(0xFF6366F1).copy(alpha = 0.2f) else Color(0xFF1E293B),
+                                    if (selected) Color(0xFF60A5FA).copy(alpha = 0.2f) else Color(0xFF1E293B),
                                     RoundedCornerShape(20.dp)
                                 )
                                 .border(
                                     1.dp, 
-                                    if (selected) Color(0xFF6366F1) else Color.White.copy(alpha = 0.1f),
+                                    if (selected) Color(0xFF60A5FA) else Color.White.copy(alpha = 0.1f),
                                     RoundedCornerShape(20.dp)
                                 )
                                 .clickable { 

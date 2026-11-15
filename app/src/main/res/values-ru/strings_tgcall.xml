@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tgc_title">Звонок Telegram</string>
+    <string name="tgc_incoming">Входящий звонок Telegram</string>
+    <string name="tgc_calling">Вызов…</string>
+    <string name="tgc_ringing">Идут гудки…</string>
+    <string name="tgc_connecting">Соединение…</string>
+    <string name="tgc_ended">Звонок завершён</string>
+    <string name="tgc_declined">Звонок отклонён</string>
+    <string name="tgc_busy">Занято</string>
+    <string name="tgc_no_answer">Нет ответа</string>
+    <string name="tgc_failed">Не удалось позвонить</string>
+    <string name="tgc_mic_on">МИКРОФОН ВКЛ</string>
+    <string name="tgc_mic_off">МИКРОФОН ВЫКЛ</string>
+    <string name="tgc_ongoing">Идёт звонок Telegram</string>
+    <string name="tgc_channel">Звонки Telegram</string>
+    <string name="tgc_call">Позвонить</string>
+    <string name="tgc_incoming_video">Входящий видеозвонок Telegram</string>
+    <string name="tgc_camera_on">КАМЕРА ВКЛ</string>
+    <string name="tgc_camera_off">КАМЕРА ВЫКЛ</string>
+    <string name="tgc_switch_camera">ДРУГАЯ КАМЕРА</string>
+    <string name="tgc_start_video">ВКЛЮЧИТЬ КАМЕРУ</string>
+    <string name="tgc_video">Видео</string>
+    <string name="tgc_no_sim_no_tg">Нет SIM-карты, а у этого контакта нет Telegram. Позвонить нельзя.</string>
+    <string name="tgc_calling_via_tg">Звонок через Telegram…</string>
+</resources>
