@@ -24,6 +24,9 @@ class BootReceiver : BroadcastReceiver() {
                 try {
                     val app = LauncherApp.instance
                     val db = app.database
+                    // Phone handed to a new owner: run the setup wizard again on this boot (one-shot).
+                    app.settingsRepository.consumeRestartSetupOnReboot()
+
                     val settings = app.settingsRepository.settingsFlow.first()
 
                     // 0. Start Fall Detection if enabled and permissions granted

@@ -20,6 +20,21 @@ Om de telefoon op afstand te kunnen beheren, moet uw nummer herkend worden als e
 
 ---
 
+## 🔑 Pincode van de instellingen
+- **Standaard pincode: `1234`.** In de installatiewizard (stappen voor de mantelzorger) kunt u een eigen pincode kiezen. Tot die tijd werkt `1234`.
+- **Vergrendelen:** het menu vraagt pas om de pincode nadat u onderaan *Instellingen* op **"Menu vergrendelen"** tikt.
+- **Op afstand wijzigen:** stuur vanaf een SOS-contact een SMS `#PIN 5678` (zie [COMMANDS_NL.md](COMMANDS_NL.md)).
+- **Pincode vergeten:** stuur `#PIN` met een nieuwe code vanaf een SOS-contact, of installeer de app opnieuw (alle instellingen worden gewist).
+
+### 📞 Bellen via Telegram
+- *Instellingen* → **Bellen**: **"Bel buitenlandse nummers via Telegram"** (standaard aan) en **"Bel altijd via Telegram"**.
+- Telegram wordt alleen gebruikt als het contact in de telefooncontacten staat, Telegram heeft, en de officiële Telegram-app geïnstalleerd is en contacten synchroniseert. Anders wordt er gewoon gebeld. 112 en andere korte nummers gaan altijd via het telefoonnetwerk.
+
+### 🔄 Telefoon overdragen aan een nieuwe eigenaar
+- *Instellingen* → Systeem → **"Installatie opnieuw starten na herstart"**. Na de volgende herstart begint de installatiewizard opnieuw (één keer). Het opgeslagen eigen nummer wordt gewist; contacten, medicijnen en wekkers blijven. Ontkoppel Telegram zo nodig zelf in Berichten.
+
+---
+
 ## 📱 2. Privacy & Veiligheid (Android 16 Ready)
 De app gebruikt **Privacy by Design**. Dit betekent:
 *   **Privacy Labels:** Op schermen waar gevoelige data wordt gebruikt (zoals Locatie of Contacten), ziet de senior nu expliciet een blauw privacy-icoon met uitleg waarom deze data nodig is.

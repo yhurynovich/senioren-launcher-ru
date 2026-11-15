@@ -42,13 +42,15 @@ fun HomeTopBar(notificationCount: Int, onNotificationsClick: () -> Unit) {
     var batteryLevel by remember { mutableIntStateOf(100) }
     var isCharging by remember { mutableStateOf(false) }
     var isWifiConnected by remember { mutableStateOf(false) }
+    // 0..1, null = onbekend
+    var wifiQuality by remember { mutableStateOf<Float?>(null) }
 
     LaunchedEffect(Unit) {
         while (true) {
             val now = Date()
             currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(now)
             currentDate = SimpleDateFormat("EEEE d MMMM", Locale.getDefault()).format(now)
-            
+
             val batteryStatus: Intent? = IntentFilter(Intent.ACTION_BATTERY_CHANGED).let { filter ->
                 context.registerReceiver(null, filter)
             }
@@ -60,123 +62,231 @@ fun HomeTopBar(notificationCount: Int, onNotificationsClick: () -> Unit) {
             val network = connectivityManager.activeNetwork
             val capabilities = connectivityManager.getNetworkCapabilities(network)
             isWifiConnected = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true
+            wifiQuality = if (isWifiConnected) wifiSignalQuality(context, capabilities) else null
 
-            kotlinx.coroutines.delay(60000)
+            // Every 10 s so the clock and Wi-Fi strength stay current.
+            kotlinx.coroutines.delay(10_000)
         }
     }
 
-    Surface(
-        color = Color.Transparent,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        // Het hele scherm schaalt mee met de tekstgrootte (Theme.kt), dus de balk moet
-        // in twee rijen: status + meldingen bovenaan, de klok op volle breedte eronder.
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    val statusCapsule: @Composable () -> Unit = {
+        Surface(
+            shape = RoundedCornerShape(22.dp),
+            color = Color(0xFF1E293B).copy(alpha = 0.6f),
+            modifier = Modifier.height(44.dp),
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
         ) {
+            Row(
+                Modifier.padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                BatteryGauge(level = batteryLevel, charging = isCharging)
+                val q = wifiQuality
+                Icon(
+                    imageVector = when {
+                        !isWifiConnected -> Icons.Default.SignalCellularAlt
+                        q == null || q >= 0.67f -> Icons.Default.Wifi
+                        q >= 0.34f -> Icons.Default.Wifi2Bar
+                        else -> Icons.Default.Wifi1Bar
+                    },
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp),
+                    tint = if (q != null) signalColor(q) else Color.White.copy(alpha = 0.6f)
+                )
+            }
+        }
+    }
+
+    val bell: @Composable () -> Unit = {
+        Surface(
+            onClick = onNotificationsClick,
+            modifier = Modifier.size(60.dp),
+            shape = CircleShape,
+            color = Color(0xFF1E293B).copy(alpha = 0.6f),
+            border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    Icons.Default.Notifications,
+                    contentDescription = i18n(R.string.meldingen_2),
+                    modifier = Modifier.size(32.dp),
+                    tint = if (notificationCount > 0) Color(0xFF6366F1) else Color.White.copy(alpha = 0.4f)
+                )
+                if (notificationCount > 0) {
+                    Surface(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(2.dp)
+                            .size(22.dp),
+                        shape = CircleShape,
+                        color = Color(0xFFEF4444),
+                        border = BorderStroke(1.5.dp, Color(0xFF0F172A))
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                "$notificationCount",
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Black
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    val clock: @Composable () -> Unit = {
+        Text(
+            currentTime,
+            maxLines = 1,
+            softWrap = false,
+            fontSize = 44.sp,
+            lineHeight = 46.sp,
+            fontWeight = FontWeight.W900,
+            color = Color.White,
+            letterSpacing = (-2).sp
+        )
+    }
+
+    val date: @Composable () -> Unit = {
+        Text(
+            currentDate.uppercase(),
+            maxLines = 2,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            fontSize = 12.sp,
+            lineHeight = 14.sp,
+            fontWeight = FontWeight.Black,
+            color = Color(0xFF6366F1), // Modern Indigo
+            letterSpacing = 1.sp
+        )
+    }
+
+    // Het hele scherm schaalt mee met de tekstgrootte (Theme.kt). Bij normale grootte past
+    // alles op één rij (status · klok+datum · meldingen); bij grote tekst gaat de datum
+    // tussen status en meldingen en komt de klok eronder.
+    // The status bar is hidden, so the header starts at the very top. Step the side items
+    // clear of a camera hole in a top corner; a hole in the middle pushes the whole header down.
+    val cutout = com.seniorenlauncher.ui.components.rememberTopCutout()
+    val outer = 16.dp
+    val gap = 6.dp
+    val cutoutPadding = Modifier.padding(
+        start = if (cutout.left > 0.dp) (cutout.left - outer + gap).coerceAtLeast(0.dp) else 0.dp,
+        end = if (cutout.right > 0.dp) (cutout.right - outer + gap).coerceAtLeast(0.dp) else 0.dp,
+        top = cutout.center
+    )
+
+    BoxWithConstraints(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = outer, vertical = 6.dp)
+            .then(cutoutPadding)
+    ) {
+        // oval (~80dp) + clock (~120dp) + bell (60dp) + spacing
+        if (maxWidth >= 300.dp) {
             Row(
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Links: Status Capsule (Glass Effect)
-                Surface(
-                    shape = RoundedCornerShape(30.dp),
-                    color = Color(0xFF1E293B).copy(alpha = 0.6f),
-                    modifier = Modifier.weight(1f).height(60.dp),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
-                ) {
-                    Row(
-                        Modifier.padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Icon(
-                            imageVector = if (isCharging) Icons.Default.BatteryChargingFull else if (batteryLevel < 20) Icons.Default.BatteryAlert else Icons.Default.BatteryFull,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                            tint = if (batteryLevel < 20 && !isCharging) Color(0xFFEF4444) else Color(0xFF10B981)
-                        )
-                        Text(
-                            text = "$batteryLevel%",
-                            fontSize = 16.sp,
-                            maxLines = 1,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White
-                        )
-                        Icon(
-                            imageVector = if (isWifiConnected) Icons.Default.Wifi else Icons.Default.SignalCellularAlt,
-                            contentDescription = null,
-                            modifier = Modifier.size(22.dp),
-                            tint = Color.White.copy(alpha = 0.6f)
-                        )
-                    }
+                statusCapsule()
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    clock()
+                    date()
                 }
-
-                // Rechts: Notification Avatar (Glass Effect)
-                Surface(
-                    onClick = onNotificationsClick,
-                    modifier = Modifier.size(60.dp),
-                    shape = CircleShape,
-                    color = Color(0xFF1E293B).copy(alpha = 0.6f),
-                    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.1f))
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            Icons.Default.Notifications, 
-                            contentDescription = i18n(R.string.meldingen_2),
-                            modifier = Modifier.size(30.dp),
-                            tint = if (notificationCount > 0) Color(0xFF6366F1) else Color.White.copy(alpha = 0.4f)
-                        )
-                        if (notificationCount > 0) {
-                            Surface(
-                                modifier = Modifier
-                                    .align(Alignment.TopEnd)
-                                    .padding(4.dp)
-                                    .size(24.dp),
-                                shape = CircleShape,
-                                color = Color(0xFFEF4444),
-                                border = BorderStroke(2.dp, Color(0xFF0F172A))
-                            ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Text(
-                                        "$notificationCount",
-                                        color = Color.White,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Black
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                bell()
             }
+        } else {
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    statusCapsule()
+                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) { date() }
+                    bell()
+                }
+                clock()
+            }
+        }
+    }
+}
 
-            // Klok op volle breedte
-            Text(
-                currentTime,
-                maxLines = 1,
-                softWrap = false,
-                fontSize = 44.sp,
-                fontWeight = FontWeight.W900,
-                color = Color.White,
-                letterSpacing = (-2).sp
+/**
+ * Horizontal battery whose fill length shows the charge. The fill is one solid colour that
+ * moves from red (empty) through yellow to green (full).
+ */
+@Composable
+private fun BatteryGauge(level: Int, charging: Boolean) {
+    val fraction = level.coerceIn(0, 100) / 100f
+    Box(contentAlignment = Alignment.Center) {
+        androidx.compose.foundation.Canvas(Modifier.size(width = 30.dp, height = 16.dp)) {
+            val stroke = 1.5.dp.toPx()
+            val capW = 2.5.dp.toPx()
+            val bodyW = size.width - capW
+            val r = androidx.compose.ui.geometry.CornerRadius(3.dp.toPx())
+            // outline
+            drawRoundRect(
+                color = Color.White.copy(alpha = 0.8f),
+                size = androidx.compose.ui.geometry.Size(bodyW, size.height),
+                cornerRadius = r,
+                style = androidx.compose.ui.graphics.drawscope.Stroke(stroke)
             )
-            Text(
-                currentDate.uppercase(),
-                maxLines = 2,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Black,
-                color = Color(0xFF6366F1), // Modern Indigo
-                letterSpacing = 1.sp
+            // terminal cap
+            drawRoundRect(
+                color = Color.White.copy(alpha = 0.8f),
+                topLeft = androidx.compose.ui.geometry.Offset(bodyW, size.height * 0.3f),
+                size = androidx.compose.ui.geometry.Size(capW, size.height * 0.4f),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(1.dp.toPx())
+            )
+            // fill
+            val inset = stroke + 1.dp.toPx()
+            val innerW = bodyW - inset * 2
+            val fillW = (innerW * fraction).coerceAtLeast(if (level > 0) 2.dp.toPx() else 0f)
+            if (fillW > 0f) {
+                drawRoundRect(
+                    color = signalColor(fraction),
+                    topLeft = androidx.compose.ui.geometry.Offset(inset, inset),
+                    size = androidx.compose.ui.geometry.Size(fillW, size.height - inset * 2),
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(1.5.dp.toPx())
+                )
+            }
+        }
+        if (charging) {
+            Icon(
+                Icons.Default.Bolt,
+                contentDescription = null,
+                modifier = Modifier.size(14.dp).offset(x = (-1).dp),
+                tint = Color.White
             )
         }
     }
 }
+
+/** Wi-Fi signal quality from 0 (unusable, about -90 dBm) to 1 (excellent, about -55 dBm), or null if unknown. */
+@Suppress("DEPRECATION")
+private fun wifiSignalQuality(context: Context, caps: NetworkCapabilities?): Float? {
+    var rssi = Int.MIN_VALUE
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+        caps?.signalStrength?.let { if (it != NetworkCapabilities.SIGNAL_STRENGTH_UNSPECIFIED) rssi = it }
+    }
+    if (rssi == Int.MIN_VALUE) {
+        try {
+            val wm = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as android.net.wifi.WifiManager
+            val r = wm.connectionInfo?.rssi ?: Int.MIN_VALUE
+            // -127 is what Android reports when the value is unavailable
+            if (r > -127 && r < 0) rssi = r
+        } catch (_: Exception) { }
+    }
+    if (rssi == Int.MIN_VALUE) return null
+    return ((rssi + 90f) / 35f).coerceIn(0f, 1f)
+}
+
+/** Red (0) → amber → green (1), via the HSV hue so the middle stays a clean yellow instead of brown. */
+private fun signalColor(quality: Float): Color =
+    Color.hsv(hue = 120f * quality.coerceIn(0f, 1f), saturation = 0.85f, value = 0.95f)
 
 @Composable
 fun HomeSOSButton(onClick: () -> Unit, modifier: Modifier = Modifier) {

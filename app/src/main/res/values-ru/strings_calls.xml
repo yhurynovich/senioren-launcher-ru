@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calls_title">Звонки</string>
+    <string name="calls_telegram_all">Звонить через Telegram всегда</string>
+    <string name="calls_telegram_international">Звонить через Telegram за границу</string>
+    <string name="calls_telegram_hint">Работает, если у контакта есть Telegram и приложение Telegram установлено на этом телефоне. Иначе будет обычный звонок. Экстренные номера всегда через телефонную сеть.</string>
+    <string name="restart_setup_on_reboot">Начать настройку заново после перезагрузки</string>
+    <string name="restart_setup_on_reboot_hint">Для передачи телефона новому владельцу: после следующей перезагрузки мастер настройки запустится заново. Срабатывает один раз.</string>
+    <string name="sort_most_used">Частые</string>
+</resources>

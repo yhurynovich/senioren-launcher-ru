@@ -39,7 +39,7 @@ Most smartphones are designed for digital natives. We turn that around. The Seni
 - **Safe at Any Text Size:** The whole UI scales with the chosen text size. Setup steps scroll while the *Next* button stays pinned, the top bar uses two rows, and tile labels shrink automatically instead of being cut off.
 - **Smart Status Badges:** Visual feedback for missed calls and unread messages.
 - **Night Lamp Mode:** Long-press the alarm screen to transform the display into a soft orange night light.
-- **PIN-Protected Settings:** The management menu is locked to prevent accidental configuration changes.
+- **PIN-Protected Settings:** The management menu is locked to prevent accidental configuration changes. **Default PIN: `1234`** (change it in the setup wizard or with the `#PIN` SMS command).
 
 ### 🆘 Emergency & Active Safety
 - **One-Tap SOS:** A large, prominent button triggers a countdown before calling emergency services and sharing GPS coordinates via SMS.

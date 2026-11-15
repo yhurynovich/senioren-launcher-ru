@@ -155,6 +155,18 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch { repository.setPinCode(pin) }
     }
 
+    fun toggleTelegramCallsAll() {
+        viewModelScope.launch { repository.setTelegramCallsAll(!settings.value.telegramCallsAll) }
+    }
+
+    fun toggleTelegramCallsInternational() {
+        viewModelScope.launch { repository.setTelegramCallsInternational(!settings.value.telegramCallsInternational) }
+    }
+
+    fun toggleRestartSetupOnReboot() {
+        viewModelScope.launch { repository.setRestartSetupOnReboot(!settings.value.restartSetupOnReboot) }
+    }
+
     fun completeSetup() {
         viewModelScope.launch { repository.setHasCompletedSetup(true) }
     }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calls_title">Appels</string>
+    <string name="calls_telegram_all">Toujours appeler via Telegram</string>
+    <string name="calls_telegram_international">Appeler l\'étranger via Telegram</string>
+    <string name="calls_telegram_hint">Fonctionne si le contact utilise Telegram et que l\'application Telegram est installée sur ce téléphone. Sinon, un appel normal est passé. Les numéros d\'urgence passent toujours par le réseau téléphonique.</string>
+    <string name="restart_setup_on_reboot">Relancer la configuration après redémarrage</string>
+    <string name="restart_setup_on_reboot_hint">Pour confier le téléphone à un nouveau propriétaire : l\'assistant de configuration redémarre après le prochain redémarrage. Une seule fois.</string>
+    <string name="sort_most_used">Fréquents</string>
+</resources>

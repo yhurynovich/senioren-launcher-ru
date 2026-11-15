@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calls_title">Anrufe</string>
+    <string name="calls_telegram_all">Immer über Telegram anrufen</string>
+    <string name="calls_telegram_international">Auslandsnummern über Telegram anrufen</string>
+    <string name="calls_telegram_hint">Funktioniert, wenn der Kontakt Telegram nutzt und die Telegram-App auf diesem Telefon installiert ist. Sonst wird normal angerufen. Notrufnummern laufen immer über das Telefonnetz.</string>
+    <string name="restart_setup_on_reboot">Einrichtung nach Neustart wiederholen</string>
+    <string name="restart_setup_on_reboot_hint">Zur Übergabe an einen neuen Besitzer: Nach dem nächsten Neustart startet der Einrichtungsassistent erneut. Dies geschieht einmal.</string>
+    <string name="sort_most_used">Häufigste</string>
+</resources>

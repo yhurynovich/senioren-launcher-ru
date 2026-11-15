@@ -39,7 +39,7 @@ De meeste smartphones zijn ontworpen voor "digital natives". Wij draaien dat om.
 - **Veilig bij Elke Tekstgrootte:** De hele interface schaalt mee. Installatiestappen scrollen terwijl *Volgende* vastzit, de bovenbalk gebruikt twee rijen en tegellabels worden automatisch kleiner in plaats van afgekapt.
 - **Slimme Status Badges:** Zie in één oogopslag hoeveel onbeantwoorde oproepen of berichten er zijn.
 - **Nachtlamp Modus:** Houd het wekkerscherm lang ingedrukt om het scherm te veranderen in een zacht oranje nachtlampje.
-- **PIN-Beveiliging:** Instellingen zijn vergrendeld om te voorkomen dat de configuratie per ongeluk wordt gewijzigd.
+- **PIN-Beveiliging:** Instellingen zijn vergrendeld om te voorkomen dat de configuratie per ongeluk wordt gewijzigd. **Standaard pincode: `1234`** (wijzigen in de installatiewizard of met het SMS-commando `#PIN`).
 
 ### 🆘 Noodhulp & Actieve Veiligheid
 - **Eén-Klik SOS:** Een grote knop start een aftelmechanisme, waarna direct hulpdiensten worden gebeld en GPS-coördinaten worden verzonden.

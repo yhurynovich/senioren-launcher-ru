@@ -38,6 +38,9 @@ class SettingsRepository(private val context: Context) {
         val STEPS_TODAY = intPreferencesKey("steps_today")
         val LAST_SENSOR_VALUE = floatPreferencesKey("last_sensor_value")
         val LAST_STEPS_UPDATE_DAY = intPreferencesKey("last_steps_update_day")
+        val TELEGRAM_CALLS_ALL = booleanPreferencesKey("telegram_calls_all")
+        val TELEGRAM_CALLS_INTERNATIONAL = booleanPreferencesKey("telegram_calls_international")
+        val RESTART_SETUP_ON_REBOOT = booleanPreferencesKey("restart_setup_on_reboot")
     }
 
     val settingsFlow: Flow<AppSettings> = context.dataStore.data.map { prefs ->
@@ -70,7 +73,10 @@ class SettingsRepository(private val context: Context) {
             hasCompletedSetup = prefs[HAS_COMPLETED_SETUP] ?: false,
             privacyAccepted = prefs[PRIVACY_ACCEPTED] ?: false,
             userPhoneNumber = prefs[USER_PHONE_NUMBER],
-            stepsToday = if (currentDay == lastUpdateDay) (prefs[STEPS_TODAY] ?: 0) else 0
+            stepsToday = if (currentDay == lastUpdateDay) (prefs[STEPS_TODAY] ?: 0) else 0,
+            telegramCallsAll = prefs[TELEGRAM_CALLS_ALL] ?: false,
+            telegramCallsInternational = prefs[TELEGRAM_CALLS_INTERNATIONAL] ?: true,
+            restartSetupOnReboot = prefs[RESTART_SETUP_ON_REBOOT] ?: false
         )
     }
 
@@ -93,7 +99,36 @@ class SettingsRepository(private val context: Context) {
             prefs[HAS_COMPLETED_SETUP] = updated.hasCompletedSetup
             prefs[PRIVACY_ACCEPTED] = updated.privacyAccepted
             if (updated.userPhoneNumber != null) prefs[USER_PHONE_NUMBER] = updated.userPhoneNumber
+            prefs[TELEGRAM_CALLS_ALL] = updated.telegramCallsAll
+            prefs[TELEGRAM_CALLS_INTERNATIONAL] = updated.telegramCallsInternational
+            prefs[RESTART_SETUP_ON_REBOOT] = updated.restartSetupOnReboot
         }
+    }
+
+    suspend fun setTelegramCallsAll(enabled: Boolean) {
+        context.dataStore.edit { it[TELEGRAM_CALLS_ALL] = enabled }
+    }
+
+    suspend fun setTelegramCallsInternational(enabled: Boolean) {
+        context.dataStore.edit { it[TELEGRAM_CALLS_INTERNATIONAL] = enabled }
+    }
+
+    suspend fun setRestartSetupOnReboot(enabled: Boolean) {
+        context.dataStore.edit { it[RESTART_SETUP_ON_REBOOT] = enabled }
+    }
+
+    /** Runs once at boot: if armed, clears the flag and sends the next start back into the setup wizard. */
+    suspend fun consumeRestartSetupOnReboot(): Boolean {
+        var fired = false
+        context.dataStore.edit { prefs ->
+            if (prefs[RESTART_SETUP_ON_REBOOT] == true) {
+                prefs[RESTART_SETUP_ON_REBOOT] = false
+                prefs[HAS_COMPLETED_SETUP] = false
+                prefs.remove(USER_PHONE_NUMBER)
+                fired = true
+            }
+        }
+        return fired
     }
 
     val sosPhoneNumberFlow: Flow<String?> = context.dataStore.data.map { it[SOS_PHONE_NUMBER] }

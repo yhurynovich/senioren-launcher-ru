@@ -55,7 +55,10 @@ fun SettingsScreen(vm: SettingsViewModel, onNavigate: (String) -> Unit, onBack: 
         onToggleFallDetection = { vm.toggleFallDetection() },
         onToggleBatteryAlert = { vm.toggleBatteryAlert() },
         onToggleChargingReminder = { vm.toggleChargingReminder() },
-        onLockSettings = { vm.lockSettings() }
+        onLockSettings = { vm.lockSettings() },
+        onToggleTelegramCallsAll = { vm.toggleTelegramCallsAll() },
+        onToggleTelegramCallsInternational = { vm.toggleTelegramCallsInternational() },
+        onToggleRestartSetupOnReboot = { vm.toggleRestartSetupOnReboot() }
     )
 }
 
@@ -76,7 +79,10 @@ fun SettingsScreenContent(
     onToggleFallDetection: () -> Unit,
     onToggleBatteryAlert: () -> Unit,
     onToggleChargingReminder: () -> Unit,
-    onLockSettings: () -> Unit
+    onLockSettings: () -> Unit,
+    onToggleTelegramCallsAll: () -> Unit = {},
+    onToggleTelegramCallsInternational: () -> Unit = {},
+    onToggleRestartSetupOnReboot: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -281,6 +287,24 @@ fun SettingsScreenContent(
                 }
             }
 
+            // --- GROEP 3b: BELLEN ---
+            SettingsGroup(title = i18n(R.string.calls_title), icon = Icons.Default.Call) {
+                SettToggle(i18n(R.string.calls_telegram_all), settings.telegramCallsAll) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onToggleTelegramCallsAll()
+                }
+                SettToggle(i18n(R.string.calls_telegram_international), settings.telegramCallsAll || settings.telegramCallsInternational) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    if (!settings.telegramCallsAll) onToggleTelegramCallsInternational()
+                }
+                Text(
+                    i18n(R.string.calls_telegram_hint),
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
             // --- GROEP 4: SYSTEEM & BEHEER ---
             SettingsGroup(title = i18n(R.string.systeem_beheer), icon = Icons.Default.Build) {
                 // UPDATE SECTIE
@@ -329,6 +353,19 @@ fun SettingsScreenContent(
                 SettRow(i18n(R.string.geavanceerde_instellingen)) {
                     // Placeholder voor toekomstige systeem-integraties
                 }
+
+                HorizontalDivider(Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
+
+                SettToggle(i18n(R.string.restart_setup_on_reboot), settings.restartSetupOnReboot) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onToggleRestartSetupOnReboot()
+                }
+                Text(
+                    i18n(R.string.restart_setup_on_reboot_hint),
+                    fontSize = 14.sp,
+                    lineHeight = 18.sp,
+                    color = if (settings.restartSetupOnReboot) Color(0xFFF59E0B) else MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 
                 Spacer(Modifier.height(16.dp))
                 

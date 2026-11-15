@@ -26,7 +26,13 @@ data class AppSettings(
     val hasCompletedSetup: Boolean = false,
     val privacyAccepted: Boolean = false,
     val userPhoneNumber: String? = null,
-    val stepsToday: Int = 0
+    val stepsToday: Int = 0,
+    /** Place every call through Telegram when the contact has it. */
+    val telegramCallsAll: Boolean = false,
+    /** Place calls to foreign numbers through Telegram when the contact has it. */
+    val telegramCallsInternational: Boolean = true,
+    /** One-shot: on the next reboot, start the setup wizard again (handing the phone to a new owner). */
+    val restartSetupOnReboot: Boolean = false
 )
 
 @Entity(tableName = "contacts")

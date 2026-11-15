@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calls_title">Aramalar</string>
+    <string name="calls_telegram_all">Tüm aramalarda Telegram\'ı tercih et</string>
+    <string name="calls_telegram_international">Yurt dışı aramalarda Telegram\'ı tercih et</string>
+    <string name="calls_telegram_hint">Kişi Telegram kullanıyorsa ve bu telefonda Telegram uygulaması yüklüyse çalışır. Aksi halde normal arama yapılır. Acil numaralar her zaman telefon şebekesini kullanır.</string>
+    <string name="restart_setup_on_reboot">Yeniden başlatmadan sonra kurulumu tekrarla</string>
+    <string name="restart_setup_on_reboot_hint">Telefonu yeni bir sahibine devretmek için: bir sonraki yeniden başlatmada kurulum sihirbazı tekrar başlar. Bu bir kez olur.</string>
+    <string name="sort_most_used">En çok</string>
+</resources>

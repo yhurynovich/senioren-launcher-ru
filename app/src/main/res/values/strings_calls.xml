@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calls_title">Bellen</string>
+    <string name="calls_telegram_all">Bel altijd via Telegram</string>
+    <string name="calls_telegram_international">Bel buitenlandse nummers via Telegram</string>
+    <string name="calls_telegram_hint">Werkt als het contact Telegram heeft en de Telegram-app op deze telefoon staat. Anders wordt er gewoon gebeld. Noodnummers gaan altijd via het telefoonnetwerk.</string>
+    <string name="restart_setup_on_reboot">Installatie opnieuw starten na herstart</string>
+    <string name="restart_setup_on_reboot_hint">Voor het overdragen van de telefoon aan een nieuwe eigenaar: bij de volgende herstart begint de installatiewizard opnieuw. Dit gebeurt één keer.</string>
+    <string name="sort_most_used">Meest gebeld</string>
+</resources>

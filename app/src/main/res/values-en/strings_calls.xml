@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calls_title">Calls</string>
+    <string name="calls_telegram_all">Prefer Telegram for all calls</string>
+    <string name="calls_telegram_international">Prefer Telegram for international calls</string>
+    <string name="calls_telegram_hint">Works when the contact uses Telegram and the Telegram app is installed on this phone. Otherwise a normal call is made. Emergency numbers always use the phone network.</string>
+    <string name="restart_setup_on_reboot">Restart setup after reboot</string>
+    <string name="restart_setup_on_reboot_hint">For handing the phone to a new owner: the setup wizard starts again after the next reboot. This happens once.</string>
+    <string name="sort_most_used">Most used</string>
+</resources>

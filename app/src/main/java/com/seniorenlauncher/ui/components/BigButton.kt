@@ -211,16 +211,19 @@ fun BigButton(
 
 @Composable
 fun ScreenHeader(title: String, onBack: () -> Unit) {
+    // The status bar is hidden; drop the back button just below a camera hole on the left or in the middle.
+    val cutout = rememberTopCutout()
+    val topPad = if (cutout.left > 0.dp || cutout.center > 0.dp) cutout.height else 8.dp
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 20.dp, top = 8.dp),
+            .padding(bottom = 16.dp, top = topPad),
         color = Color.Transparent
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 96.dp),
+                .heightIn(min = 72.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(

@@ -46,6 +46,23 @@ class MainActivity : ComponentActivity() {
         super.attachBaseContext(com.seniorenlauncher.util.LocaleHelper.setLocale(newBase, com.seniorenlauncher.util.LocaleHelper.saved(newBase)))
     }
 
+    /**
+     * The home screen shows its own clock, battery, Wi-Fi and notification bell, so the system
+     * status bar is hidden. A swipe down from the top edge shows it briefly (and the notification
+     * shade still opens with a second swipe).
+     */
+    private fun hideStatusBar() {
+        val controller = androidx.core.view.WindowCompat.getInsetsController(window, window.decorView)
+        controller.systemBarsBehavior = androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        controller.hide(androidx.core.view.WindowInsetsCompat.Type.statusBars())
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        // Dialogs, the keyboard or other apps can bring the bar back; hide it again when we regain focus.
+        if (hasFocus) hideStatusBar()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         if (intent?.getStringExtra("NAVIGATE_TO") == "alarm_trigger" || intent?.getStringExtra("NAVIGATE_TO") == "fall_detected") {
             setupLockscreenBypass()
@@ -54,11 +71,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         // Android 15/16 Edge-to-Edge ondersteuning
-        enableEdgeToEdge()
-        
+        // Light status icons on a dark backing, so the bar is readable when it is swiped into view
+        // (with the default style a phone in light mode drew dark icons on our dark background).
+        enableEdgeToEdge(statusBarStyle = androidx.activity.SystemBarStyle.dark(0xCC000000.toInt()))
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             window.isNavigationBarContrastEnforced = false
         }
+        hideStatusBar()
         
         handleIntent(intent)
 
@@ -112,7 +132,17 @@ class MainActivity : ComponentActivity() {
             }
 
             SeniorenLauncherTheme(appTheme = settings.theme, fontSize = settings.fontSize) {
-                Surface(Modifier.fillMaxSize()) {
+                // The status bar is hidden. The main app uses the top area itself and only moves what would
+                // sit under the camera hole (see rememberTopCutout); the setup wizard and the full-screen
+                // alarm/fall screens keep a plain band clear of the cutout.
+                val clearCutoutBand = isFallDetected || triggerLabel != null || !settings.hasCompletedSetup
+                Surface(
+                    Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) { Box(
+                    if (clearCutoutBand) Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.displayCutout.only(WindowInsetsSides.Top))
+                    else Modifier.fillMaxSize()
+                ) {
                     if (isFallDetected) {
                         FallDetectionDialog(
                             onConfirm = {
@@ -179,7 +209,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                }
+                } }
             }
         }
     }

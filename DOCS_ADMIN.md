@@ -37,6 +37,19 @@ To manage the phone remotely, your number must be recognised as an authorised SO
 - **Replacing or removing an app:** in the same dialog, tap **"Replace or remove"** (not available for Settings, Wi-Fi and Bluetooth).
 - **Language:** *Settings* → Language. The app restarts and shows the new language.
 
+### 🔑 Settings PIN
+- **Default PIN: `1234`.** You can choose a different PIN in the setup wizard (caregiver steps). Until then, `1234` works.
+- **Locking:** the menu only asks for the PIN after you tap **"Lock menu"** at the bottom of *Settings*.
+- **Changing it remotely:** send an SMS `#PIN 5678` from an SOS contact (see [COMMANDS.md](COMMANDS.md)).
+- **Forgotten PIN:** send `#PIN` with a new code from an SOS contact, or reinstall the app (this clears all settings).
+
+### 📞 Calls via Telegram
+- *Settings* → **Calls**: **"Prefer Telegram for international calls"** (on by default) and **"Prefer Telegram for all calls"**.
+- Telegram is only used when the contact is in the phone's contacts, uses Telegram, and the official Telegram app is installed and syncing contacts. Otherwise a normal call is made. 112 and other short numbers always go over the phone network.
+
+### 🔄 Handing the phone to a new owner
+- *Settings* → System → **"Restart setup after reboot"**. After the next reboot the setup wizard starts again (once). The saved own phone number is cleared; contacts, medication and alarms stay. Disconnect Telegram yourself in Messages if needed.
+
 ---
 
 ## 📱 3. Privacy & Safety (Android 16 Ready)

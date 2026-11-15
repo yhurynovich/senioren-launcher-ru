@@ -162,6 +162,7 @@ fun ContactsScreen(onBack: () -> Unit, settingsVm: SettingsViewModel = viewModel
 }
 
 private fun makeCall(context: Context, phoneNumber: String) {
+    if (com.seniorenlauncher.util.TelegramCalls.callIfPreferred(context, phoneNumber)) return
     try {
         val intent = Intent(Intent.ACTION_DIAL).apply {
             data = Uri.parse("tel:$phoneNumber")

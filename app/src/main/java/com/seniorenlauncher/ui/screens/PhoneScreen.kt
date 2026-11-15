@@ -64,7 +64,10 @@ import coil.compose.AsyncImage
 import com.seniorenlauncher.LauncherApp
 import com.seniorenlauncher.data.model.QuickContact
 import com.seniorenlauncher.ui.components.ScreenHeader
+import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -117,10 +120,13 @@ fun PhoneScreen(onNavigate: (String) -> Unit, onBack: () -> Unit, settingsVm: Se
     val favorieten by dao.getAll().collectAsState(initial = emptyList())
     
     var allContacts by remember { mutableStateOf(emptyList<DeviceContact>()) }
+    // Calls per number (key: last 9 digits), for the "Most used" sort
+    var callCounts by remember { mutableStateOf(emptyMap<String, Int>()) }
     
     LaunchedEffect(settings.userPhoneNumber, permissionsGranted) {
         if (permissionsGranted) {
-            val deviceContacts = fetchAllDeviceContacts(localContext)
+            val deviceContacts = withContext(Dispatchers.IO) { fetchAllDeviceContacts(localContext) }
+            callCounts = withContext(Dispatchers.IO) { fetchCallCounts(localContext) }
             val myNumber = settings.userPhoneNumber ?: tryGetMyNumber(localContext)
             
             allContacts = if (myNumber != null) {
@@ -133,7 +139,8 @@ fun PhoneScreen(onNavigate: (String) -> Unit, onBack: () -> Unit, settingsVm: Se
     }
 
     var phoneNumber by remember { mutableStateOf("") }
-    var activeTab by remember { mutableStateOf(PhoneTab.Dialer) }
+    // "Most used" is the first tab and the default
+    var activeTab by rememberSaveable { mutableStateOf(PhoneTab.MostUsed) }
     
     val matchedContact = favorieten.find { isNumberMatch(it.phoneNumber, phoneNumber) }
 
@@ -149,12 +156,13 @@ fun PhoneScreen(onNavigate: (String) -> Unit, onBack: () -> Unit, settingsVm: Se
         ) {
             ScreenHeader(
                 title = when(activeTab) {
+                    PhoneTab.MostUsed -> i18n(R.string.sort_most_used)
                     PhoneTab.Dialer -> i18n(R.string.telefoon_2)
                     PhoneTab.Recents -> i18n(R.string.recent)
                     PhoneTab.Contacts -> i18n(R.string.contacten)
                 }, 
                 onBack = { 
-                    if (activeTab != PhoneTab.Dialer) activeTab = PhoneTab.Dialer 
+                    if (activeTab != PhoneTab.MostUsed) activeTab = PhoneTab.MostUsed
                     else onBack() 
                 }
             )
@@ -183,24 +191,31 @@ fun PhoneScreen(onNavigate: (String) -> Unit, onBack: () -> Unit, settingsVm: Se
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     PhoneTabButton(
+                        icon = Icons.Default.Star,
+                        label = i18n(R.string.sort_most_used),
+                        isSelected = activeTab == PhoneTab.MostUsed,
+                        modifier = Modifier.weight(if (activeTab == PhoneTab.MostUsed) 2f else 1f),
+                        onClick = { activeTab = PhoneTab.MostUsed }
+                    )
+                    PhoneTabButton(
                         icon = Icons.Default.Dialpad,
                         label = i18n(R.string.toetsen),
                         isSelected = activeTab == PhoneTab.Dialer,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(if (activeTab == PhoneTab.Dialer) 2f else 1f),
                         onClick = { activeTab = PhoneTab.Dialer }
                     )
                     PhoneTabButton(
                         icon = Icons.Default.History,
                         label = i18n(R.string.recent_2),
                         isSelected = activeTab == PhoneTab.Recents,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(if (activeTab == PhoneTab.Recents) 2f else 1f),
                         onClick = { activeTab = PhoneTab.Recents }
                     )
                     PhoneTabButton(
                         icon = Icons.Default.Person,
                         label = i18n(R.string.lijst),
                         isSelected = activeTab == PhoneTab.Contacts,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(if (activeTab == PhoneTab.Contacts) 2f else 1f),
                         onClick = { activeTab = PhoneTab.Contacts }
                     )
                 }
@@ -247,10 +262,12 @@ fun PhoneScreen(onNavigate: (String) -> Unit, onBack: () -> Unit, settingsVm: Se
                                 }
                             )
                             PhoneTab.Recents -> RecentsList(onCall = { number -> makeDirectCall(localContext, number) })
-                            PhoneTab.Contacts -> AllContactsList(
+                            PhoneTab.MostUsed, PhoneTab.Contacts -> AllContactsList(
                                 favorieten = favorieten,
                                 initialContacts = allContacts,
                                 myNumber = settings.userPhoneNumber,
+                                callCounts = callCounts,
+                                sort = if (tab == PhoneTab.MostUsed) ContactSort.MostUsed else ContactSort.Alphabetical,
                                 onToggleFavorite = { contact ->
                                     scope.launch {
                                         val existing = favorieten.find { isNumberMatch(it.phoneNumber, contact.number) }
@@ -275,7 +292,9 @@ fun PhoneScreen(onNavigate: (String) -> Unit, onBack: () -> Unit, settingsVm: Se
     }
 }
 
-enum class PhoneTab { Dialer, Recents, Contacts }
+enum class PhoneTab { MostUsed, Dialer, Recents, Contacts }
+
+enum class ContactSort { MostUsed, Alphabetical }
 
 @Composable
 fun PhoneTabButton(icon: ImageVector, label: String, isSelected: Boolean, modifier: Modifier, onClick: () -> Unit) {
@@ -486,7 +505,7 @@ fun DialerContent(
                 Button(
                     onClick = {
                         showEmergencyConfirm = false
-                        makeDirectCall(context, "112")
+                        makeDirectCall(context, "112", allowTelegram = false)
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                     modifier = Modifier.height(64.dp).fillMaxWidth(0.6f),
@@ -619,6 +638,8 @@ fun AllContactsList(
     favorieten: List<QuickContact>,
     initialContacts: List<DeviceContact>,
     myNumber: String?,
+    callCounts: Map<String, Int> = emptyMap(),
+    sort: ContactSort = ContactSort.MostUsed,
     onToggleFavorite: (DeviceContact) -> Unit,
     onContactSelected: (String) -> Unit,
     onSetMyNumber: (String) -> Unit
@@ -628,6 +649,16 @@ fun AllContactsList(
 
     val filteredContacts = initialContacts.filter { 
         it.name.contains(searchQuery, ignoreCase = true) || isNumberMatch(it.number, searchQuery)
+    }.let { list ->
+        // "Me" always stays on top; the list arrives sorted A–Z from the contacts provider.
+        when (sort) {
+            ContactSort.Alphabetical -> list.sortedWith(compareByDescending<DeviceContact> { it.isMe }.thenBy { it.name.lowercase() })
+            ContactSort.MostUsed -> list.sortedWith(
+                compareByDescending<DeviceContact> { it.isMe }
+                    .thenByDescending { callCounts[callKey(it.number)] ?: 0 }
+                    .thenBy { it.name.lowercase() }
+            )
+        }
     }
 
     Column(Modifier.fillMaxSize()) {
@@ -788,6 +819,29 @@ fun fetchCallLog(context: Context): List<CallLogEntry> {
     return list
 }
 
+/** Key used to match numbers between the call log and contacts: the last 9 digits. */
+fun callKey(number: String): String = normalizeNumber(number).takeLast(9)
+
+/** Number of calls per number (outgoing, and incoming that were answered) over the recent call log. */
+fun fetchCallCounts(context: Context): Map<String, Int> {
+    val counts = mutableMapOf<String, Int>()
+    try {
+        context.contentResolver.query(
+            CallLog.Calls.CONTENT_URI,
+            arrayOf(CallLog.Calls.NUMBER, CallLog.Calls.TYPE),
+            "${CallLog.Calls.TYPE} IN (${CallLog.Calls.OUTGOING_TYPE}, ${CallLog.Calls.INCOMING_TYPE})",
+            null, CallLog.Calls.DATE + " DESC"
+        )?.use {
+            var n = 0
+            while (it.moveToNext() && n++ < 1000) {
+                val key = callKey(it.getString(0) ?: continue)
+                if (key.isNotEmpty()) counts[key] = (counts[key] ?: 0) + 1
+            }
+        }
+    } catch (e: Exception) { }
+    return counts
+}
+
 fun fetchAllDeviceContacts(context: Context): List<DeviceContact> {
     val contacts = mutableListOf<DeviceContact>()
     val cursor = context.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC")
@@ -805,8 +859,10 @@ fun fetchAllDeviceContacts(context: Context): List<DeviceContact> {
     return contacts.distinctBy { normalizeNumber(it.number) }
 }
 
-fun makeDirectCall(context: Context, number: String) {
+fun makeDirectCall(context: Context, number: String, allowTelegram: Boolean = true) {
     if (number.isEmpty()) return
+    // Telegram first when the settings ask for it and the contact has Telegram; otherwise a normal call.
+    if (allowTelegram && com.seniorenlauncher.util.TelegramCalls.callIfPreferred(context, number)) return
     val uri = Uri.parse("tel:${Uri.encode(number)}")
     try {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {

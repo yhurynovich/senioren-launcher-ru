@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calls_title">المكالمات</string>
+    <string name="calls_telegram_all">تفضيل تيليجرام لجميع المكالمات</string>
+    <string name="calls_telegram_international">تفضيل تيليجرام للمكالمات الدولية</string>
+    <string name="calls_telegram_hint">يعمل إذا كان لدى جهة الاتصال تيليجرام وكان تطبيق تيليجرام مثبتاً على هذا الهاتف. وإلا تتم مكالمة عادية. أرقام الطوارئ تستخدم دائماً شبكة الهاتف.</string>
+    <string name="restart_setup_on_reboot">إعادة الإعداد بعد إعادة التشغيل</string>
+    <string name="restart_setup_on_reboot_hint">لتسليم الهاتف إلى مالك جديد: يبدأ معالج الإعداد من جديد بعد إعادة التشغيل التالية. يحدث ذلك مرة واحدة.</string>
+    <string name="sort_most_used">الأكثر استخداماً</string>
+</resources>
